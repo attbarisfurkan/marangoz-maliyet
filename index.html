@@ -3,618 +3,385 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BoyutLab - CNC & Ahşap Maliyet Hesaplayıcı</title>
+  <title>Maydinwood - Ahşap & CNC Maliyet Hesabı</title>
   <meta name="theme-color" content="#1e293b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href='data:application/json,{"name":"BoyutLab Maliyet","short_name":"BoyutLab","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#1e293b","icons":[{"src":"https://via.placeholder.com/192/1e293b/ffffff?text=BL","sizes":"192x192","type":"image/png"}]}'>
-  
+  <link rel="manifest" href='data:application/json,{"name":"Maydinwood Maliyet","short_name":"Maydinwood","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#1e293b","icons":[{"src":"https://via.placeholder.com/192/1e293b/ffffff?text=MW","sizes":"192x192","type":"image/png"}]}'>
+
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
+      --bg: #0b1329;
+      --card-bg: #17223b;
+      --accent: #f59e0b;
+      --accent-blue: #38bdf8;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --border: #334155;
+      --border: #263554;
       --success: #22c55e;
-      --warning: #f59e0b;
-      --danger: #ef4444;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 30px; }
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      padding: 12px;
-      padding-bottom: 60px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
+    /* HEADER */
     header {
-      text-align: center;
-      padding: 16px 0;
+      background: #0f172a;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 20px;
     }
+    .brand h1 { font-size: 1.2rem; color: var(--accent); }
+    .brand p { font-size: 0.75rem; color: var(--text-muted); }
+    .btn-reset { background: var(--border); color: var(--text); border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
 
-    header h1 {
-      font-size: 1.5rem;
-      color: var(--accent);
-      letter-spacing: 0.5px;
+    /* TABS */
+    .tabs {
+      display: flex;
+      background: #0f172a;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
     }
-
-    header p {
-      font-size: 0.85rem;
+    .tab-btn {
+      padding: 12px 16px;
+      background: none;
+      border: none;
       color: var(--text-muted);
-      margin-top: 4px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
     }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* CONTAINER & CARDS */
+    .content { padding: 12px; max-width: 800px; margin: 0 auto; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--accent);
+      border-radius: 10px;
+      padding: 14px;
       margin-bottom: 12px;
+    }
+    .card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-
-    @media (max-width: 600px) {
-      .grid-2, .grid-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .form-group {
+      align-items: center;
       margin-bottom: 10px;
     }
+    .card-title { font-size: 0.95rem; font-weight: bold; color: var(--accent); display: flex; align-items: center; gap: 6px; }
 
-    label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    input, select, textarea {
+    .form-group { margin-bottom: 8px; }
+    label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    input, select {
       width: 100%;
-      padding: 10px;
-      background: #0f172a;
+      padding: 8px 10px;
+      background: #0b1329;
       border: 1px solid var(--border);
       border-radius: 6px;
       color: var(--text);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border 0.2s;
+      font-size: 0.85rem;
     }
 
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
 
-    .summary-box {
-      background: #090d16;
-      border: 2px solid var(--accent);
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 20px;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      padding: 6px 0;
-      border-bottom: 1px dashed var(--border);
-    }
-
-    .summary-row.total {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--success);
-      border-bottom: none;
-      padding-top: 10px;
-    }
-
-    .btn {
-      display: inline-block;
-      width: 100%;
-      padding: 12px;
+    .btn-add {
       background: var(--accent);
       color: #000;
-      font-weight: bold;
-      text-align: center;
       border: none;
-      border-radius: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.8rem;
       cursor: pointer;
-      font-size: 0.95rem;
-      margin-top: 10px;
-      transition: background 0.2s;
     }
 
-    .btn:hover {
-      background: var(--accent-hover);
-      color: #fff;
+    .part-item {
+      background: #0b1329;
+      border: 1px solid var(--border);
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      position: relative;
     }
-
-    .btn-secondary {
-      background: var(--border);
-      color: var(--text);
-    }
-
-    .btn-secondary:hover {
-      background: #475569;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: #fff;
-    }
-
-    .quote-output {
-      width: 100%;
-      height: 140px;
-      font-family: monospace;
-      font-size: 0.85rem;
-      margin-top: 10px;
-      resize: vertical;
-    }
-
-    .badge {
+    .btn-del {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
       font-size: 0.7rem;
-      background: #334155;
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 10px;
     }
 
-    .action-buttons {
+    .total-banner {
+      background: #091020;
+      border: 1px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 12px;
       display: flex;
-      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 10px;
     }
+    .total-price { font-size: 1.1rem; font-weight: bold; color: var(--accent); }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-    <h1>BOYUTLAB / MAYDINWOOD</h1>
-    <p>CNC Otomasyonu & Ahşap Maliyet Hesaplayıcı (PWA)</p>
-  </header>
+<header>
+  <div class="brand">
+    <h1>Maydinwood</h1>
+    <p>Ahşap & CNC Maliyet Hesabı</p>
+  </div>
+  <button class="btn-reset" onclick="resetForm()">↺ Sıfırla</button>
+</header>
 
-  <!-- 1. MALZEME / PLAKA HESABI -->
-  <div class="card">
-    <div class="card-title">
-      <span>1. Malzeme & Plaka Maliyeti</span>
-      <span class="badge">Ham Madde</span>
-    </div>
-    <div class="form-group">
-      <label>Malzeme Türü</label>
-      <select id="matType">
-        <option value="mdf">MDF / Ham MDF</option>
-        <option value="lam_mdf">MDF Lam / Suntalam</option>
-        <option value="plywood">Kontraplak / Plywood</option>
-        <option value="masif">Masif Ahşap / Panel</option>
-        <option value="aluminyum">Alüminyum Kompozit</option>
-        <option value="pleksi">Akrilik / Pleksi</option>
-      </select>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Plaka En (mm)</label>
-        <input type="number" id="boardW" value="2800">
+<!-- SEKMELER (TABS) -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(0)">🔔 1. Ahşap & Plaka</button>
+  <button class="tab-btn" onclick="switchTab(1)">⚙️ 2. CAD/CAM & CNC</button>
+  <button class="tab-btn" onclick="switchTab(2)">🔨 3. Yüzey & İşçilik</button>
+  <button class="tab-btn" onclick="switchTab(3)">📊 4. Özet & Teklif</button>
+</div>
+
+<div class="content">
+
+  <!-- TAB 1: AHŞAP VE PLAKA -->
+  <div class="tab-content active">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📦 Ahşap / Plaka Parçaları</div>
+        <button class="btn-add" onclick="addPart()">+ Parça Ekle</button>
       </div>
-      <div class="form-group">
-        <label>Plaka Boy (mm)</label>
-        <input type="number" id="boardH" value="2100">
-      </div>
+      <div id="partsContainer"></div>
     </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Plaka Fiyatı (TL)</label>
-        <input type="number" id="boardPrice" value="2500">
-      </div>
-      <div class="form-group">
-        <label>Fire / Bağlantı Payı (%)</label>
-        <input type="number" id="wastePercent" value="15">
+
+    <div class="card">
+      <div class="card-title">🎗️ Kenar Bandı & Ekstra Kaplama</div>
+      <div class="grid-2" style="margin-top:8px;">
+        <div class="form-group">
+          <label>Toplam PVC/Bant (Metre)</label>
+          <input type="number" id="tapeMeters" value="0" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>Bant Metre Fiyatı (TL/m)</label>
+          <input type="number" id="tapePrice" value="12" oninput="calculate()">
+        </div>
       </div>
     </div>
-    <div class="grid-3">
-      <div class="form-group">
-        <label>Kullanılan En (mm)</label>
-        <input type="number" id="partW" value="1200">
+
+    <div class="total-banner">
+      <span>Toplam Malzeme Maliyeti:</span>
+      <span class="total-price" id="subMaterial">0.00 TL</span>
+    </div>
+  </div>
+
+  <!-- TAB 2: CAD/CAM & CNC -->
+  <div class="tab-content">
+    <div class="card">
+      <div class="card-title">⚙️ CNC & Elektrik Otomasyonu</div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Spindle Gücü (kW)</label>
+          <input type="number" id="spindleKw" value="9" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>Elektrik Birim Fiyatı (TL/kWh)</label>
+          <input type="number" id="elecRate" value="4.5" oninput="calculate()">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Kullanılan Boy (mm)</label>
-        <input type="number" id="partH" value="800">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Kesim Süresi (Dakika)</label>
+          <input type="number" id="cncMin" value="30" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>Bıçak Aşınma (TL/Saat)</label>
+          <input type="number" id="toolRate" value="100" oninput="calculate()">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Parça Adedi</label>
-        <input type="number" id="partQty" value="1">
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 CAD / CAM Tasarım</div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>CAD Süresi (Saat)</label>
+          <input type="number" id="cadHours" value="1" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>CAD Saat Ücreti (TL)</label>
+          <input type="number" id="cadRate" value="300" oninput="calculate()">
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 2. CNC & MAKİNE OTOMASYONU -->
-  <div class="card">
-    <div class="card-title">
-      <span>2. CNC & Spindle Otomasyonu</span>
-      <span class="badge">9kW - 24kW</span>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Spindle / Güç Tüketimi (kW)</label>
-        <input type="number" id="cncPowerKw" value="9" step="0.5">
+  <!-- TAB 3: YÜZEY & İŞÇİLİK -->
+  <div class="tab-content">
+    <div class="card">
+      <div class="card-title">🔨 Zımpara, Cila & İşçilik</div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Zımpara / Yağ / Cila (TL)</label>
+          <input type="number" id="finishCost" value="150" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>Hırdavat / Aksesuar (TL)</label>
+          <input type="number" id="hardwareCost" value="100" oninput="calculate()">
+        </div>
       </div>
-      <div class="form-group">
-        <label>Elektrik Birim Fiyatı (TL/kWh)</label>
-        <input type="number" id="elecPrice" value="4.5" step="0.1">
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>CNC Kesim / İşleme Süresi (Dk)</label>
-        <input type="number" id="cncTimeMin" value="45">
-      </div>
-      <div class="form-group">
-        <label>Bıçak & Aşınma Payı (TL/Saat)</label>
-        <input type="number" id="toolWearRate" value="120">
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. CAD / CAM VE TASARIM SÜRESİ -->
-  <div class="card">
-    <div class="card-title">
-      <span>3. CAD / CAM & Tasarım Süreçleri</span>
-      <span class="badge">Mühendislik</span>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>CAD (3D Çizim) Süresi (Saat)</label>
-        <input type="number" id="cadHours" value="1" step="0.5">
-      </div>
-      <div class="form-group">
-        <label>CAD Birim Ücreti (TL/Saat)</label>
-        <input type="number" id="cadRate" value="300">
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>CAM (Bıçak Yolu) Süresi (Saat)</label>
-        <input type="number" id="camHours" value="0.5" step="0.5">
-      </div>
-      <div class="form-group">
-        <label>CAM Birim Ücreti (TL/Saat)</label>
-        <input type="number" id="camRate" value="250">
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Montaj Süresi (Saat)</label>
+          <input type="number" id="laborHours" value="2" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>İşçilik Saat Ücreti (TL)</label>
+          <input type="number" id="laborRate" value="200" oninput="calculate()">
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- 4. YÜZEY İŞLEM, İŞÇİLİK VE NAKLİYE -->
-  <div class="card">
-    <div class="card-title">
-      <span>4. Yüzey İşlem, İşçilik & Hırdavat</span>
-      <span class="badge">Atölye</span>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Zımpara / Yağ / Boya / Cila (TL)</label>
-        <input type="number" id="finishingCost" value="150">
-      </div>
-      <div class="form-group">
-        <label>Hırdavat / Kulp / Vida (TL)</label>
-        <input type="number" id="hardwareCost" value="80">
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Montaj / Atölye İşçiliği (Saat)</label>
-        <input type="number" id="laborHours" value="2">
-      </div>
-      <div class="form-group">
-        <label>İşçilik Saat Ücreti (TL)</label>
-        <input type="number" id="laborRate" value="200">
+  <!-- TAB 4: ÖZET & TEKLİF -->
+  <div class="tab-content">
+    <div class="card">
+      <div class="card-title">📊 Fiyatlandırma & KDV</div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Kâr Marjı (%)</label>
+          <input type="number" id="profitPercent" value="50" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label>KDV Oranı (%)</label>
+          <select id="vatPercent" onchange="calculate()">
+            <option value="20" selected>%20 KDV</option>
+            <option value="10">%10 KDV</option>
+            <option value="0">%0 Muaf</option>
+          </select>
+        </div>
       </div>
     </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Ambalaj & Nakliye (TL)</label>
-        <input type="number" id="shippingCost" value="250">
-      </div>
-      <div class="form-group">
-        <label>Atölye Sabit Gider Payı (%)</label>
-        <input type="number" id="overheadPercent" value="10">
-      </div>
-    </div>
-  </div>
 
-  <!-- 5. KÂR MARJI VE KDV -->
-  <div class="card">
-    <div class="card-title">
-      <span>5. Kâr Marjı & Fiyatlandırma</span>
-      <span class="badge">Satış</span>
-    </div>
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Hedef Kâr Marjı (%) [veya 4x Mantığı]</label>
-        <input type="number" id="profitPercent" value="50">
-      </div>
-      <div class="form-group">
-        <label>KDV Oranı (%)</label>
-        <select id="vatPercent">
-          <option value="20" selected>%20 KDV</option>
-          <option value="10">%10 KDV</option>
-          <option value="0">%0 (Muaf)</option>
-        </select>
+    <div class="total-banner" style="border-color: var(--success);">
+      <div>
+        <div style="font-size:0.8rem; color:var(--text-muted)">Nihai Satış Tutarı (KDV Dahil):</div>
+        <div class="total-price" id="finalTotal" style="color:var(--success); font-size:1.4rem;">0.00 TL</div>
       </div>
     </div>
-  </div>
-
-  <!-- ÖZET VE SONUÇ EKRANI -->
-  <div class="summary-box">
-    <div class="summary-row">
-      <span>Net Malzeme Maliyeti (Fire Dahil):</span>
-      <span id="resMaterial">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>CNC Elektrik Tüketimi:</span>
-      <span id="resElec">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>CNC Bıçak & Aşınma Maliyeti:</span>
-      <span id="resTool">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>CAD / CAM Tasarım Maliyeti:</span>
-      <span id="resCadCam">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>Atölye İşçilik & Yüzey İşlem:</span>
-      <span id="resLabor">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>Hırdavat, Nakliye & Sabit Gider:</span>
-      <span id="resExtra">0 TL</span>
-    </div>
-    <div class="summary-row" style="font-weight: bold; color: #38bdf8;">
-      <span>Toplam Yalın Maliyet:</span>
-      <span id="resBaseTotal">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>Kâr Miktarı:</span>
-      <span id="resProfit">0 TL</span>
-    </div>
-    <div class="summary-row">
-      <span>KDV Tutar:</span>
-      <span id="resVat">0 TL</span>
-    </div>
-    <div class="summary-row total">
-      <span>Nihai Müşteri Satış Fiyatı:</span>
-      <span id="resFinalTotal">0 TL</span>
-    </div>
-  </div>
-
-  <!-- TEKLİF METNİ OLUŞTURUCU -->
-  <div class="card" style="margin-top:20px;">
-    <div class="card-title">
-      <span>Müşteri Teklif Metni</span>
-      <button class="btn btn-secondary" style="width:auto; padding:4px 12px; font-size:0.75rem;" onclick="copyQuote()">Teklifi Kopyala</button>
-    </div>
-    <div class="form-group">
-      <label>Müşteri / Proje Adı</label>
-      <input type="text" id="clientName" value="Sayın Müşterimiz" oninput="calculate()">
-    </div>
-    <textarea id="quoteArea" class="quote-output" readonly></textarea>
-  </div>
-
-  <!-- VERİ YÖNETİMİ & BUTONLAR -->
-  <div class="action-buttons">
-    <button class="btn btn-secondary" onclick="exportData()">Verileri İndir (JSON)</button>
-    <button class="btn btn-danger" onclick="resetForm()">Formu Sıfırla</button>
   </div>
 
 </div>
 
 <script>
-  // Otomatik Hesaplama Fonksiyonu
-  function calculate() {
-    // 1. Malzeme Hesaplama
-    const boardW = parseFloat(document.getElementById('boardW').value) || 1;
-    const boardH = parseFloat(document.getElementById('boardH').value) || 1;
-    const boardPrice = parseFloat(document.getElementById('boardPrice').value) || 0;
-    const wastePercent = parseFloat(document.getElementById('wastePercent').value) || 0;
-    
-    const partW = parseFloat(document.getElementById('partW').value) || 0;
-    const partH = parseFloat(document.getElementById('partH').value) || 0;
-    const partQty = parseFloat(document.getElementById('partQty').value) || 1;
-
-    const boardAreaM2 = (boardW * boardH) / 1000000;
-    const partAreaM2 = ((partW * partH) / 1000000) * partQty;
-    
-    const rawMaterialCost = (partAreaM2 / boardAreaM2) * boardPrice;
-    const materialCost = rawMaterialCost * (1 + (wastePercent / 100));
-
-    // 2. CNC & Güç Otomasyonu
-    const cncPowerKw = parseFloat(document.getElementById('cncPowerKw').value) || 0;
-    const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 0;
-    const cncTimeMin = parseFloat(document.getElementById('cncTimeMin').value) || 0;
-    const toolWearRate = parseFloat(document.getElementById('toolWearRate').value) || 0;
-
-    const cncTimeHours = cncTimeMin / 60;
-    const elecCost = (cncPowerKw * cncTimeHours) * elecPrice;
-    const toolWearCost = cncTimeHours * toolWearRate;
-
-    // 3. CAD / CAM
-    const cadHours = parseFloat(document.getElementById('cadHours').value) || 0;
-    const cadRate = parseFloat(document.getElementById('cadRate').value) || 0;
-    const camHours = parseFloat(document.getElementById('camHours').value) || 0;
-    const camRate = parseFloat(document.getElementById('camRate').value) || 0;
-
-    const cadCamCost = (cadHours * cadRate) + (camHours * camRate);
-
-    // 4. Yüzey İşlem, İşçilik & Nakliye
-    const finishingCost = parseFloat(document.getElementById('finishingCost').value) || 0;
-    const hardwareCost = parseFloat(document.getElementById('hardwareCost').value) || 0;
-    const laborHours = parseFloat(document.getElementById('laborHours').value) || 0;
-    const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
-    const shippingCost = parseFloat(document.getElementById('shippingCost').value) || 0;
-    const overheadPercent = parseFloat(document.getElementById('overheadPercent').value) || 0;
-
-    const laborCost = laborHours * laborRate;
-    const subTotalBeforeOverhead = materialCost + elecCost + toolWearCost + cadCamCost + finishingCost + hardwareCost + laborCost + shippingCost;
-    const overheadCost = subTotalBeforeOverhead * (overheadPercent / 100);
-    
-    const baseTotalCost = subTotalBeforeOverhead + overheadCost;
-
-    // 5. Kâr & KDV
-    const profitPercent = parseFloat(document.getElementById('profitPercent').value) || 0;
-    const vatPercent = parseFloat(document.getElementById('vatPercent').value) || 0;
-
-    const profitAmount = baseTotalCost * (profitPercent / 100);
-    const subTotalWithProfit = baseTotalCost + profitAmount;
-    const vatAmount = subTotalWithProfit * (vatPercent / 100);
-    const finalTotal = subTotalWithProfit + vatAmount;
-
-    // Arayüzü Güncelle
-    document.getElementById('resMaterial').innerText = materialCost.toFixed(2) + " TL";
-    document.getElementById('resElec').innerText = elecCost.toFixed(2) + " TL";
-    document.getElementById('resTool').innerText = toolWearCost.toFixed(2) + " TL";
-    document.getElementById('resCadCam').innerText = cadCamCost.toFixed(2) + " TL";
-    document.getElementById('resLabor').innerText = (laborCost + finishingCost).toFixed(2) + " TL";
-    document.getElementById('resExtra').innerText = (hardwareCost + shippingCost + overheadCost).toFixed(2) + " TL";
-    document.getElementById('resBaseTotal').innerText = baseTotalCost.toFixed(2) + " TL";
-    document.getElementById('resProfit').innerText = profitAmount.toFixed(2) + " TL";
-    document.getElementById('resVat').innerText = vatAmount.toFixed(2) + " TL";
-    document.getElementById('resFinalTotal').innerText = finalTotal.toFixed(2) + " TL";
-
-    // Teklif Metnini Güncelle
-    generateQuote(finalTotal, subTotalWithProfit, vatAmount, vatPercent);
-
-    // LocalStorage Otomatik Kayıt
-    saveToLocalStorage();
+  function switchTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === idx));
   }
 
-  function generateQuote(finalTotal, subTotal, vatAmount, vatPercent) {
-    const clientName = document.getElementById('clientName').value || "Müşterimiz";
-    const partW = document.getElementById('partW').value;
-    const partH = document.getElementById('partH').value;
-    const partQty = document.getElementById('partQty').value;
-    
-    const quoteText = `Sayın ${clientName},
-
-BoyutLab / Maydinwood bünyesinde özel CNC kesim ve ahşap işleme projeniz için hazırlanan maliyet teklifi aşağıdadır:
-
-• Ürün Ölçüleri: ${partW} mm x ${partH} mm (${partQty} Adet)
-• Tasarım, CAD/CAM, CNC İşleme ve Yüzey Uygulamaları Dahil
-• Ara Toplam: ${subTotal.toFixed(2)} TL
-• KDV (%${vatPercent}): ${vatAmount.toFixed(2)} TL
------------------------------------------------
-• GENEL TOPLAM: ${finalTotal.toFixed(2)} TL
-
-* Teklifimiz 7 gün süreyle geçerlidir.
-* Teslimat süresi onay sonrası planlanacaktır.`;
-
-    document.getElementById('quoteArea').value = quoteText;
-  }
-
-  function copyQuote() {
-    const quoteArea = document.getElementById('quoteArea');
-    quoteArea.select();
-    document.execCommand('copy');
-    alert('Teklif metni panoya kopyalandı!');
-  }
-
-  function saveToLocalStorage() {
-    const inputs = document.querySelectorAll('input, select');
-    const data = {};
-    inputs.forEach(i => data[i.id] = i.value);
-    localStorage.setItem('boyutlab_calc_data', JSON.stringify(data));
-  }
-
-  function loadFromLocalStorage() {
-    const saved = localStorage.getItem('boyutlab_calc_data');
-    if (saved) {
-      const data = JSON.parse(saved);
-      Object.keys(data).forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = data[id];
-      });
-    }
+  let partId = 0;
+  function addPart() {
+    partId++;
+    const div = document.createElement('div');
+    div.className = 'part-item';
+    div.id = 'part_' + partId;
+    div.innerHTML = `
+      <button class="btn-del" onclick="removePart(${partId})">✕</button>
+      <div class="grid-2">
+        <div class="form-group"><label>En (mm)</label><input type="number" class="p-w" value="1200" oninput="calculate()"></div>
+        <div class="form-group"><label>Boy (mm)</label><input type="number" class="p-h" value="800" oninput="calculate()"></div>
+      </div>
+      <div class="grid-3">
+        <div class="form-group"><label>Adet</label><input type="number" class="p-qty" value="1" oninput="calculate()"></div>
+        <div class="form-group"><label>Plaka (TL)</label><input type="number" class="p-price" value="2500" oninput="calculate()"></div>
+        <div class="form-group"><label>Fire (%)</label><input type="number" class="p-waste" value="15" oninput="calculate()"></div>
+      </div>
+    `;
+    document.getElementById('partsContainer').appendChild(div);
     calculate();
   }
 
-  function exportData() {
-    const saved = localStorage.getItem('boyutlab_calc_data');
-    if (!saved) return alert('Kaydedilmiş veri bulunamadı.');
-    const blob = new Blob([saved], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'boyutlab_hesap_yedek.json';
-    a.click();
+  function removePart(id) {
+    const el = document.getElementById('part_' + id);
+    if(el) el.remove();
+    calculate();
   }
 
-  function resetForm() {
-    if (confirm('Tüm verileri sıfırlamak istediğinize emin misiniz?')) {
-      localStorage.removeItem('boyutlab_calc_data');
-      location.reload();
-    }
+  function calculate() {
+    let matTotal = 0;
+    document.querySelectorAll('.part-item').forEach(item => {
+      const w = parseFloat(item.querySelector('.p-w').value) || 0;
+      const h = parseFloat(item.querySelector('.p-h').value) || 0;
+      const qty = parseFloat(item.querySelector('.p-qty').value) || 1;
+      const price = parseFloat(item.querySelector('.p-price').value) || 0;
+      const waste = parseFloat(item.querySelector('.p-waste').value) || 0;
+
+      const areaM2 = (w * h / 1000000) * qty;
+      const boardArea = 2.8 * 2.1; // Standart Plaka
+      const cost = (areaM2 / boardArea) * price * (1 + waste/100);
+      matTotal += cost;
+    });
+
+    const tapeM = parseFloat(document.getElementById('tapeMeters').value) || 0;
+    const tapeP = parseFloat(document.getElementById('tapePrice').value) || 0;
+    matTotal += (tapeM * tapeP);
+
+    document.getElementById('subMaterial').innerText = matTotal.toFixed(2) + " TL";
+
+    // CNC & İşçilik
+    const kw = parseFloat(document.getElementById('spindleKw').value) || 0;
+    const elecR = parseFloat(document.getElementById('elecRate').value) || 0;
+    const cncM = parseFloat(document.getElementById('cncMin').value) || 0;
+    const elecCost = (kw * (cncM/60)) * elecR;
+
+    const cadH = parseFloat(document.getElementById('cadHours').value) || 0;
+    const cadR = parseFloat(document.getElementById('cadRate').value) || 0;
+    const cadCost = cadH * cadR;
+
+    const finish = parseFloat(document.getElementById('finishCost').value) || 0;
+    const hard = parseFloat(document.getElementById('hardwareCost').value) || 0;
+    const labH = parseFloat(document.getElementById('laborHours').value) || 0;
+    const labR = parseFloat(document.getElementById('laborRate').value) || 0;
+    const laborCost = labH * labR;
+
+    const baseTotal = matTotal + elecCost + cadCost + finish + hard + laborCost;
+
+    const profit = parseFloat(document.getElementById('profitPercent').value) || 0;
+    const vat = parseFloat(document.getElementById('vatPercent').value) || 0;
+
+    const subWithProfit = baseTotal * (1 + profit/100);
+    const final = subWithProfit * (1 + vat/100);
+
+    document.getElementById('finalTotal').innerText = final.toFixed(2) + " TL";
   }
 
-  // Tüm Input'lara Dinamik Dinleyici Ekle
-  document.querySelectorAll('input, select').forEach(el => {
-    el.addEventListener('input', calculate);
-  });
+  // İlk parça varsayılan eklenir
+  window.onload = () => { addPart(); };
 
-  // Sayfa Yüklendiğinde Başlat
-  window.addEventListener('DOMContentLoaded', loadFromLocalStorage);
-
-  // Service Worker Entegrasyonu (Offline PWA)
+  // Otomatik Önbellek Yenileme (PWA Otomatik Güncelleme)
   if ('serviceWorker' in navigator) {
-    const swCode = `
-      self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
-      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-      self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Çevrimdışı Çalışma Modu'))));
-    `;
-    const blob = new Blob([swCode], { type: 'text/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (let registration of registrations) {
+        registration.update();
+      }
+    });
   }
 </script>
 </body>
