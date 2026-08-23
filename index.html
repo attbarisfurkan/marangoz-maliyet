@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Maydinwood - Ahşap & CNC Maliyet Hesaplayıcı</title>
     
-    <!-- PWA & Tam Ekran Ayarları (Standalone Uygulama Modu) -->
+    <!-- PWA & Tam Ekran Ayarları -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,8 +13,8 @@
     <meta name="application-name" content="Maydinwood">
     <meta name="apple-mobile-web-app-title" content="Maydinwood">
     
-    <!-- PWA Manifest (Chrome'un Uygulama Olarak Açması İçin Zorunlu) -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Maydinwood Maliyet Pro","short_name":"Maydinwood","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/3252/3252994.png","sizes":"512x512","type":"image/png"}]}'>
+    <!-- Manifest Bağlantısı -->
+    <link rel="manifest" href="manifest.json">
 
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -218,6 +218,15 @@
     </main>
 
     <script>
+        // Service Worker Kaydı (Android PWA Çalıştırma Motoru)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Kayıt Başarılı:', reg))
+                    .catch(err => console.log('Service Worker Hata:', err));
+            });
+        }
+
         // Tab Geçiş Fonksiyonu
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -325,7 +334,7 @@
         function resetAllData() {
             if (confirm("Tüm verileri sıfırlamak istediğinize emin misiniz?")) {
                 document.getElementById('wood-list').innerHTML = '';
-                addWoodRow('Meşe / Plaka', '650', '1');
+                addWoodRow('Masif Ahşap Plaka', '850', '1');
                 document.getElementById('cnc-time').value = '30';
                 document.getElementById('cnc-rate').value = '600';
                 document.getElementById('cnc-bit-cost').value = '50';
@@ -347,4 +356,3 @@
     </script>
 </body>
 </html>
-
