@@ -41,7 +41,7 @@
         }
         
         header h1 { font-size: 1.2rem; margin: 0; color: var(--primary); }
-        .clear-btn { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+        .clear-btn { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: bold;}
         
         /* Navigation (Tabs) */
         .nav-tabs {
@@ -50,15 +50,16 @@
             background: white;
             border-bottom: 1px solid var(--border);
             position: sticky;
-            top: 54px;
+            top: 54px; /* Header'ın altında kalması için */
             z-index: 99;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
         .nav-tabs::-webkit-scrollbar { display: none; }
         
         .tab-btn {
             flex: 0 0 auto;
-            padding: 12px 20px;
+            padding: 15px 20px; /* Dokunma alanı genişletildi */
             background: none;
             border: none;
             border-bottom: 3px solid transparent;
@@ -66,6 +67,7 @@
             color: var(--text-light);
             cursor: pointer;
             white-space: nowrap;
+            font-size: 1rem;
         }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
@@ -81,7 +83,7 @@
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; }
         .form-control {
-            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; background: var(--bg-color);
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; background: var(--bg-color);
         }
         .form-control:focus { outline: none; border-color: var(--primary); background: white; }
         
@@ -89,7 +91,7 @@
         .col { flex: 1; }
 
         button.btn-add {
-            background-color: var(--primary); color: white; border: none; padding: 12px; width: 100%;
+            background-color: var(--primary); color: white; border: none; padding: 15px; width: 100%;
             border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
         button.btn-add:active { background-color: var(--primary-dark); }
@@ -104,7 +106,7 @@
         .item-info strong { display: block; font-size: 0.95rem; }
         .item-info span { font-size: 0.8rem; color: var(--text-light); }
         .item-price { font-weight: bold; margin-right: 15px; color: var(--text-dark); }
-        .btn-delete { background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold;}
+        .btn-delete { background: var(--danger); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold;}
 
         /* Summary Section */
         .summary-card { background: var(--text-dark); color: white; }
@@ -112,28 +114,27 @@
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
         .summary-total { display: flex; justify-content: space-between; padding: 15px 0 0 0; font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-top: 10px; border-top: 2px solid var(--primary); }
         
-        .btn-print { background-color: var(--success); color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .btn-print { background-color: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
 
         /* Material Type Toggle */
-        .toggle-group { display: flex; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid var(--primary); }
-        .toggle-btn { flex: 1; padding: 10px; text-align: center; background: white; color: var(--primary); font-weight: bold; cursor: pointer; }
+        .toggle-group { display: flex; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid var(--primary); position: relative; z-index: 10; }
+        .toggle-btn { flex: 1; padding: 12px; text-align: center; background: white; color: var(--primary); font-weight: bold; cursor: pointer; transition: 0.2s; }
         .toggle-btn.active { background: var(--primary); color: white; }
         
         .material-section { display: none; }
-        .material-section.active { display: block; }
+        .material-section.active { display: block; animation: fadeIn 0.3s ease; }
         
         .help-text { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
     </style>
 </head>
-<body>
+<body ontouchstart=""> <!-- iOS için Dokunma Hassasiyeti Kilidi Açıldı -->
 
     <header>
         <h1>MaydinWood</h1>
-        <button class="clear-btn" onclick="app.clearAllData()">Tümünü Sil</button>
+        <button class="clear-btn" onclick="app.clearAllData()">Sıfırla</button>
     </header>
 
     <div class="nav-tabs">
-        <!-- HATA BURADA ÇÖZÜLDÜ: onclick içine 'this' eklendi -->
         <button class="tab-btn active" onclick="app.switchTab('hammadde', this)">Hammadde</button>
         <button class="tab-btn" onclick="app.switchTab('cnc', this)">CNC</button>
         <button class="tab-btn" onclick="app.switchTab('cadcam', this)">CAD/CAM</button>
@@ -264,7 +265,7 @@
             </div>
             
             <div class="form-group" style="background:#fff3cd; padding:10px; border-radius:4px; border:1px solid #ffeeba; font-size:0.85rem; color:#856404;">
-                <strong>Not:</strong> Toplam süre 60 dakikanın altındaysa, endüstri standardı olarak maliyet <strong>1 saat (Taban Fiyat)</strong> üzerinden hesaplanır.
+                <strong>Not:</strong> Toplam süre 60 dakikanın altındaysa, maliyet <strong>1 saat (Taban Fiyat)</strong> üzerinden hesaplanır.
             </div>
 
             <button class="btn-add" onclick="app.addCncCost()">CNC Maliyetini Ekle / Güncelle</button>
@@ -386,20 +387,25 @@
         <button class="btn-print" onclick="app.generateClientQuote()">Müşteri Teklifi Görünümü (Gizli Maliyetler)</button>
     </div>
 
-
     <script>
-        const app = {
-            data: {
-                hammadde: [],
-                cnc: [],
-                cad: [],
-                ekstra: []
-            },
+        // Kapsam (Scope) sorunu tamamen çözüldü, doğrudan window objesine bağlandı.
+        window.app = {
+            data: { hammadde: [], cnc: [], cad: [], ekstra: [] },
 
             init() {
-                const savedData = localStorage.getItem('maydinwood_data');
-                if (savedData) {
-                    this.data = JSON.parse(savedData);
+                try {
+                    // Eski bozuk verilerin sistemi çökertmesine karşı güvenlik duvarı eklendi
+                    const savedData = localStorage.getItem('maydinwood_data');
+                    if (savedData) {
+                        const parsed = JSON.parse(savedData);
+                        this.data.hammadde = parsed.hammadde || [];
+                        this.data.cnc = parsed.cnc || [];
+                        this.data.cad = parsed.cad || [];
+                        this.data.ekstra = parsed.ekstra || [];
+                    }
+                } catch(e) {
+                    console.warn("Eski veriler uyumsuz, sıfırlanıyor...");
+                    this.data = { hammadde: [], cnc: [], cad: [], ekstra: [] };
                 }
                 
                 document.getElementById('cnc_saatlik').value = localStorage.getItem('maydinwood_cnc_saat') || '';
@@ -420,26 +426,7 @@
             },
 
             clearAllData() {
-                if(confirm('Tüm projeyi silmek istediğinize emin misiniz? Ayarlarınız kalacak, sadece liste temizlenecek.')){
+                if(confirm('Tüm verileri silip sistemi sıfırlamak istediğinize emin misiniz?')){
                     this.data = { hammadde: [], cnc: [], cad: [], ekstra: [] };
                     this.saveData();
-                }
-            },
-
-            // HATA BURADA ÇÖZÜLDÜ: btnElement parametresi eklendi
-            switchTab(tabId, btnElement) {
-                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-                
-                document.getElementById(tabId).classList.add('active');
-                
-                if (btnElement) {
-                    btnElement.classList.add('active');
-                }
-
-                if(tabId === 'ozet') this.calculateTotal();
-            },
-
-            switchMaterialType(type) {
-                document.querySelectorAll('.toggle-btn').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.m
+                    window.location.reload()
