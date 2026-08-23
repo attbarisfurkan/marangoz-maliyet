@@ -1,24 +1,15 @@
 {
-  "name": "Maydinwood Maliyet Pro",
-  "short_name": "Maydinwood",
+  "name": "MAYDINWOOD CNC Hesaplayıcı",
+  "short_name": "MaydinWood",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "orientation": "portrait",
+  "background_color": "#080d1a",
+  "theme_color": "#0b1329",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3252/3252994.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3252/3252994.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/565/565547.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
