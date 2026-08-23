@@ -32,6 +32,7 @@
             padding-bottom: 80px;
         }
 
+        /* ÜST KISIM */
         .sticky-container {
             position: sticky;
             top: 0;
@@ -67,14 +68,14 @@
             font-weight: bold;
         }
 
-        /* NAVIGATION */
-
+        /* MENÜ */
         .nav-tabs {
             display: flex;
             overflow-x: auto;
             background: white;
             border-bottom: 1px solid var(--border);
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
 
         .nav-tabs::-webkit-scrollbar {
@@ -92,6 +93,7 @@
             cursor: pointer;
             white-space: nowrap;
             font-size: 1rem;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .tab-btn.active {
@@ -99,8 +101,7 @@
             border-bottom-color: var(--primary);
         }
 
-        /* CONTENT */
-
+        /* SEKME İÇERİKLERİ */
         .tab-content {
             display: none;
             padding: 20px;
@@ -110,8 +111,7 @@
             display: block;
         }
 
-        /* CARD */
-
+        /* KART */
         .card {
             background: var(--card-bg);
             border-radius: 8px;
@@ -129,7 +129,6 @@
         }
 
         /* FORM */
-
         .form-group {
             margin-bottom: 15px;
         }
@@ -166,6 +165,7 @@
             flex: 1;
         }
 
+        /* BUTON */
         button.btn-add {
             background-color: var(--primary);
             color: white;
@@ -179,8 +179,11 @@
             margin-top: 10px;
         }
 
-        /* LIST */
+        button.btn-add:active {
+            background-color: var(--primary-dark);
+        }
 
+        /* LİSTE */
         .item-list {
             list-style: none;
             margin-top: 15px;
@@ -227,8 +230,7 @@
             font-weight: bold;
         }
 
-        /* SUMMARY */
-
+        /* ÖZET */
         .summary-card {
             background: var(--text-dark);
             color: white;
@@ -257,8 +259,7 @@
             border-top: 2px solid var(--primary);
         }
 
-        /* TOGGLE */
-
+        /* MALZEME TİPİ */
         .toggle-group {
             display: flex;
             margin-bottom: 15px;
@@ -275,6 +276,7 @@
             color: var(--primary);
             font-weight: bold;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .toggle-btn.active {
@@ -295,52 +297,81 @@
             color: var(--text-light);
             margin-top: 2px;
         }
+
+        /* MOBİL */
+        @media (max-width: 500px) {
+            .tab-btn {
+                padding: 14px 16px;
+                font-size: 0.95rem;
+            }
+
+            .tab-content {
+                padding: 15px;
+            }
+
+            .row {
+                gap: 8px;
+            }
+
+            .summary-total {
+                font-size: 1.15rem;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- SABİT ÜST ALAN -->
+    <!-- SABİT ÜST MENÜ -->
     <div class="sticky-container">
 
         <header>
             <h1>MaydinWood</h1>
 
-            <button class="clear-btn" onclick="temizleSistemi()">
+            <button class="clear-btn" type="button" onclick="temizleSistemi()">
                 Sıfırla
             </button>
         </header>
 
-        <!-- MENÜ -->
         <div class="nav-tabs">
 
             <button
+                type="button"
                 class="tab-btn active"
-                onclick="sekmeDegis('hammadde', this)">
+                id="btn-tab-hammadde"
+                onclick="sekmeDegis('hammadde')">
                 Hammadde
             </button>
 
             <button
+                type="button"
                 class="tab-btn"
-                onclick="sekmeDegis('cnc', this)">
+                id="btn-tab-cnc"
+                onclick="sekmeDegis('cnc')">
                 CNC
             </button>
 
             <button
+                type="button"
                 class="tab-btn"
-                onclick="sekmeDegis('cadcam', this)">
+                id="btn-tab-cadcam"
+                onclick="sekmeDegis('cadcam')">
                 CAD/CAM
             </button>
 
             <button
+                type="button"
                 class="tab-btn"
-                onclick="sekmeDegis('ekstra', this)">
+                id="btn-tab-ekstra"
+                onclick="sekmeDegis('ekstra')">
                 İşçilik & Hırdavat
             </button>
 
             <button
+                type="button"
                 class="tab-btn"
-                onclick="sekmeDegis('ozet', this)">
+                id="btn-tab-ozet"
+                onclick="sekmeDegis('ozet')">
                 ÖZET
             </button>
 
@@ -348,9 +379,9 @@
     </div>
 
 
-    <!-- ========================= -->
+    <!-- ====================================================== -->
     <!-- HAMMADDE -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
 
     <div id="hammadde" class="tab-content active">
 
@@ -382,46 +413,35 @@
             <div id="sec-panel" class="material-section active">
 
                 <div class="form-group">
-
                     <label>Malzeme Adı</label>
-
                     <input
                         type="text"
                         id="p_ad"
                         class="form-control"
                         placeholder="Örn: 18mm Ham MDF">
-
                 </div>
-
 
                 <div class="row">
 
                     <div class="col">
-
                         <label>Plaka En (cm)</label>
-
                         <input
                             type="number"
                             id="p_plaka_en"
                             class="form-control"
                             value="210">
-
                     </div>
 
                     <div class="col">
-
                         <label>Plaka Boy (cm)</label>
-
                         <input
                             type="number"
                             id="p_plaka_boy"
                             class="form-control"
                             value="280">
-
                     </div>
 
                 </div>
-
 
                 <div class="form-group">
 
@@ -439,7 +459,6 @@
                 <h3 style="margin-top:20px; font-size:1rem;">
                     Kullanılan Parça
                 </h3>
-
 
                 <div class="row">
 
@@ -500,11 +519,10 @@
 
 
                 <button
+                    type="button"
                     class="btn-add"
                     onclick="panelEkle()">
-
                     Panel Parça Ekle
-
                 </button>
 
             </div>
@@ -611,11 +629,10 @@
 
 
                 <button
+                    type="button"
                     class="btn-add"
                     onclick="m3Ekle()">
-
                     Kereste Parça Ekle
-
                 </button>
 
             </div>
@@ -637,17 +654,15 @@
     </div>
 
 
-
-    <!-- ========================= -->
+    <!-- ====================================================== -->
     <!-- CNC -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
 
     <div id="cnc" class="tab-content">
 
         <div class="card">
 
             <h3>CNC İşleme Maliyeti</h3>
-
 
             <div class="form-group">
 
@@ -692,11 +707,10 @@
 
 
             <button
+                type="button"
                 class="btn-add"
                 onclick="cncEkle()">
-
                 CNC Maliyeti Ekle
-
             </button>
 
         </div>
@@ -716,17 +730,15 @@
     </div>
 
 
-
-    <!-- ========================= -->
-    <!-- CAD / CAM -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
+    <!-- CAD CAM -->
+    <!-- ====================================================== -->
 
     <div id="cadcam" class="tab-content">
 
         <div class="card">
 
             <h3>CAD/CAM Tasarım</h3>
-
 
             <div class="form-group">
 
@@ -771,11 +783,10 @@
 
 
             <button
+                type="button"
                 class="btn-add"
                 onclick="cadEkle()">
-
                 Tasarım Ekle
-
             </button>
 
         </div>
@@ -795,17 +806,15 @@
     </div>
 
 
-
-    <!-- ========================= -->
+    <!-- ====================================================== -->
     <!-- İŞÇİLİK & HIRDAVAT -->
-    <!-- ========================= -->
+    <!-- ====================================================== -->
 
     <div id="ekstra" class="tab-content">
 
         <div class="card">
 
             <h3>Hırdavat</h3>
-
 
             <div class="form-group">
 
@@ -836,76 +845,4 @@
 
                 <div class="col">
 
-                    <label>Adet</label>
-
-                    <input
-                        type="number"
-                        id="h_adet"
-                        class="form-control"
-                        value="1">
-
-                </div>
-
-            </div>
-
-
-            <button
-                class="btn-add"
-                onclick="hirdavatEkle()">
-
-                Hırdavat Ekle
-
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>İşçilik & Sarf</h3>
-
-
-            <div class="form-group">
-
-                <label>İşlem Adı</label>
-
-                <input
-                    type="text"
-                    id="i_ad"
-                    class="form-control"
-                    placeholder="Zımpara">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>Tutar (TL)</label>
-
-                <input
-                    type="number"
-                    id="i_tutar"
-                    class="form-control"
-                    placeholder="0">
-
-            </div>
-
-
-            <button
-                class="btn-add"
-                onclick="iscilikEkle()">
-
-                İşçilik Ekle
-
-            </button>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>Eklenenler</h3>
-
-            <ul
-                id="ekstra-list"
-      
+                    <label>Adet
