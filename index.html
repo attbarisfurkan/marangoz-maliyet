@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>MaydinWood Maliyet Hesaplama</title>
+
     <style>
         :root {
             --primary: #e67e22;
@@ -17,10 +19,19 @@
             --success: #2ecc71;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { background-color: var(--bg-color); color: var(--text-dark); padding-bottom: 80px; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding-bottom: 80px;
+        }
+
         .sticky-container {
             position: sticky;
             top: 0;
@@ -38,11 +49,26 @@
             justify-content: space-between;
             align-items: center;
         }
-        
-        header h1 { font-size: 1.2rem; margin: 0; color: var(--primary); }
-        .clear-btn { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: bold;}
-        
-        /* Navigation (Tabs) */
+
+        header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .clear-btn {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* NAVIGATION */
+
         .nav-tabs {
             display: flex;
             overflow-x: auto;
@@ -50,8 +76,11 @@
             border-bottom: 1px solid var(--border);
             -webkit-overflow-scrolling: touch;
         }
-        .nav-tabs::-webkit-scrollbar { display: none; }
-        
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
         .tab-btn {
             flex: 0 0 auto;
             padding: 15px 20px;
@@ -64,331 +93,819 @@
             white-space: nowrap;
             font-size: 1rem;
         }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-        /* Content Sections */
-        .tab-content { display: none; padding: 20px; }
-        .tab-content.active { display: block; }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
 
-        .card { background: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card h3 { margin-bottom: 15px; font-size: 1.1rem; color: var(--text-dark); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
-        
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; }
-        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; background: var(--bg-color); }
-        .form-control:focus { outline: none; border-color: var(--primary); background: white; }
-        
-        .row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .col { flex: 1; }
+        /* CONTENT */
 
-        button.btn-add { background-color: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        
-        .item-list { list-style: none; margin-top: 15px; }
-        .item-list li { background: var(--bg-color); padding: 10px 15px; border-radius: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary); }
-        .item-info { flex-grow: 1; }
-        .item-info strong { display: block; font-size: 0.95rem; }
-        .item-info span { font-size: 0.8rem; color: var(--text-light); }
-        .item-price { font-weight: bold; margin-right: 15px; }
-        .btn-delete { background: var(--danger); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold;}
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
 
-        .summary-card { background: var(--text-dark); color: white; }
-        .summary-card h3 { color: var(--primary); border-bottom-color: rgba(255,255,255,0.2); }
-        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
-        .summary-total { display: flex; justify-content: space-between; padding: 15px 0 0 0; font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-top: 10px; border-top: 2px solid var(--primary); }
-        
-        .toggle-group { display: flex; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid var(--primary); }
-        .toggle-btn { flex: 1; padding: 12px; text-align: center; background: white; color: var(--primary); font-weight: bold; cursor: pointer; }
-        .toggle-btn.active { background: var(--primary); color: white; }
-        
-        .material-section { display: none; }
-        .material-section.active { display: block; }
-        .help-text { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* CARD */
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            background: var(--bg-color);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        button.btn-add {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* LIST */
+
+        .item-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .item-list li {
+            background: var(--bg-color);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .item-info {
+            flex-grow: 1;
+        }
+
+        .item-info strong {
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .item-info span {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .item-price {
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* SUMMARY */
+
+        .summary-card {
+            background: var(--text-dark);
+            color: white;
+        }
+
+        .summary-card h3 {
+            color: var(--primary);
+            border-bottom-color: rgba(255,255,255,0.2);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.2);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0 0 0;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 10px;
+            border-top: 2px solid var(--primary);
+        }
+
+        /* TOGGLE */
+
+        .toggle-group {
+            display: flex;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--primary);
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: white;
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .material-section {
+            display: none;
+        }
+
+        .material-section.active {
+            display: block;
+        }
+
+        .help-text {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
     </style>
 </head>
+
 <body>
 
+    <!-- SABİT ÜST ALAN -->
     <div class="sticky-container">
+
         <header>
             <h1>MaydinWood</h1>
-            <button class="clear-btn" onclick="temizleSistemi()">Sıfırla</button>
+
+            <button class="clear-btn" onclick="temizleSistemi()">
+                Sıfırla
+            </button>
         </header>
 
+        <!-- MENÜ -->
         <div class="nav-tabs">
-            <button class="tab-btn active" id="btn-tab-hammadde" onclick="sekmeDegis('hammadde')">Hammadde</button>
-            <button class="tab-btn" id="btn-tab-cnc" onclick="sekmeDegis('cnc')">CNC</button>
-            <button class="tab-btn" id="btn-tab-cadcam" onclick="sekmeDegis('cadcam')">CAD/CAM</button>
-            <button class="tab-btn" id="btn-tab-ekstra" onclick="sekmeDegis('ekstra')">İşçilik & Hırdavat</button>
-            <button class="tab-btn" id="btn-tab-ozet" onclick="sekmeDegis('ozet')">ÖZET</button>
+
+            <button
+                class="tab-btn active"
+                onclick="sekmeDegis('hammadde', this)">
+                Hammadde
+            </button>
+
+            <button
+                class="tab-btn"
+                onclick="sekmeDegis('cnc', this)">
+                CNC
+            </button>
+
+            <button
+                class="tab-btn"
+                onclick="sekmeDegis('cadcam', this)">
+                CAD/CAM
+            </button>
+
+            <button
+                class="tab-btn"
+                onclick="sekmeDegis('ekstra', this)">
+                İşçilik & Hırdavat
+            </button>
+
+            <button
+                class="tab-btn"
+                onclick="sekmeDegis('ozet', this)">
+                ÖZET
+            </button>
+
         </div>
     </div>
 
+
+    <!-- ========================= -->
     <!-- HAMMADDE -->
+    <!-- ========================= -->
+
     <div id="hammadde" class="tab-content active">
+
         <div class="card">
+
             <h3>Hammadde Türü</h3>
+
             <div class="toggle-group">
-                <div class="toggle-btn active" id="tbtn-panel" onclick="malzemeTipDegis('panel')">Panel (Plaka)</div>
-                <div class="toggle-btn" id="tbtn-m3" onclick="malzemeTipDegis('m3')">M³ (Kereste)</div>
+
+                <div
+                    class="toggle-btn active"
+                    id="tbtn-panel"
+                    onclick="malzemeTipDegis('panel')">
+                    Panel (Plaka)
+                </div>
+
+                <div
+                    class="toggle-btn"
+                    id="tbtn-m3"
+                    onclick="malzemeTipDegis('m3')">
+                    M³ (Kereste)
+                </div>
+
             </div>
+
+
+            <!-- PANEL -->
 
             <div id="sec-panel" class="material-section active">
+
                 <div class="form-group">
+
                     <label>Malzeme Adı</label>
-                    <input type="text" id="p_ad" class="form-control" placeholder="Örn: 18mm Ham MDF">
+
+                    <input
+                        type="text"
+                        id="p_ad"
+                        class="form-control"
+                        placeholder="Örn: 18mm Ham MDF">
+
                 </div>
+
+
                 <div class="row">
-                    <div class="col"><label>Plaka En (cm)</label><input type="number" id="p_plaka_en" class="form-control" value="210"></div>
-                    <div class="col"><label>Plaka Boy (cm)</label><input type="number" id="p_plaka_boy" class="form-control" value="280"></div>
+
+                    <div class="col">
+
+                        <label>Plaka En (cm)</label>
+
+                        <input
+                            type="number"
+                            id="p_plaka_en"
+                            class="form-control"
+                            value="210">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label>Plaka Boy (cm)</label>
+
+                        <input
+                            type="number"
+                            id="p_plaka_boy"
+                            class="form-control"
+                            value="280">
+
+                    </div>
+
                 </div>
-                <div class="form-group"><label>1 Plaka Fiyatı (TL)</label><input type="number" id="p_fiyat" class="form-control" placeholder="Örn: 1500"></div>
-                
-                <h3 style="margin-top:20px; font-size: 1rem;">Kullanılan Parça</h3>
+
+
+                <div class="form-group">
+
+                    <label>1 Plaka Fiyatı (TL)</label>
+
+                    <input
+                        type="number"
+                        id="p_fiyat"
+                        class="form-control"
+                        placeholder="Örn: 1500">
+
+                </div>
+
+
+                <h3 style="margin-top:20px; font-size:1rem;">
+                    Kullanılan Parça
+                </h3>
+
+
                 <div class="row">
-                    <div class="col"><label>Parça En (cm)</label><input type="number" id="p_parca_en" class="form-control" placeholder="0"></div>
-                    <div class="col"><label>Parça Boy (cm)</label><input type="number" id="p_parca_boy" class="form-control" placeholder="0"></div>
+
+                    <div class="col">
+
+                        <label>Parça En (cm)</label>
+
+                        <input
+                            type="number"
+                            id="p_parca_en"
+                            class="form-control"
+                            placeholder="0">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label>Parça Boy (cm)</label>
+
+                        <input
+                            type="number"
+                            id="p_parca_boy"
+                            class="form-control"
+                            placeholder="0">
+
+                    </div>
+
                 </div>
+
+
                 <div class="row">
-                    <div class="col"><label>Adet</label><input type="number" id="p_adet" class="form-control" value="1"></div>
-                    <div class="col"><label>Fire Payı (%)</label><input type="number" id="p_fire" class="form-control" value="15"></div>
+
+                    <div class="col">
+
+                        <label>Adet</label>
+
+                        <input
+                            type="number"
+                            id="p_adet"
+                            class="form-control"
+                            value="1">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label>Fire Payı (%)</label>
+
+                        <input
+                            type="number"
+                            id="p_fire"
+                            class="form-control"
+                            value="15">
+
+                    </div>
+
                 </div>
-                <button class="btn-add" onclick="panelEkle()">Panel Parça Ekle</button>
+
+
+                <button
+                    class="btn-add"
+                    onclick="panelEkle()">
+
+                    Panel Parça Ekle
+
+                </button>
+
             </div>
+
+
+            <!-- M3 -->
 
             <div id="sec-m3" class="material-section">
-                <div class="form-group"><label>Ağaç Türü</label><input type="text" id="m_ad" class="form-control" placeholder="Örn: Kayın"></div>
-                <div class="form-group"><label>1 m³ Fiyatı (TL)</label><input type="number" id="m_fiyat" class="form-control" placeholder="Örn: 25000"></div>
-                <div class="row">
-                    <div class="col"><label>En (cm)</label><input type="number" id="m_en" class="form-control" placeholder="0"></div>
-                    <div class="col"><label>Boy (cm)</label><input type="number" id="m_boy" class="form-control" placeholder="0"></div>
-                    <div class="col"><label>Kalınlık (cm)</label><input type="number" id="m_kalinlik" class="form-control" placeholder="0"></div>
+
+                <div class="form-group">
+
+                    <label>Ağaç Türü</label>
+
+                    <input
+                        type="text"
+                        id="m_ad"
+                        class="form-control"
+                        placeholder="Örn: Kayın">
+
                 </div>
-                <div class="row">
-                    <div class="col"><label>Adet</label><input type="number" id="m_adet" class="form-control" value="1"></div>
-                    <div class="col"><label>Fire (%)</label><input type="number" id="m_fire" class="form-control" value="20"></div>
+
+
+                <div class="form-group">
+
+                    <label>1 m³ Fiyatı (TL)</label>
+
+                    <input
+                        type="number"
+                        id="m_fiyat"
+                        class="form-control"
+                        placeholder="Örn: 25000">
+
                 </div>
-                <button class="btn-add" onclick="m3Ekle()">Kereste Parça Ekle</button>
+
+
+                <div class="row">
+
+                    <div class="col">
+
+                        <label>En (cm)</label>
+
+                        <input
+                            type="number"
+                            id="m_en"
+                            class="form-control"
+                            placeholder="0">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label>Boy (cm)</label>
+
+                        <input
+                            type="number"
+                            id="m_boy"
+                            class="form-control"
+                            placeholder="0">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label>Kalınlık (cm)</label>
+
+                        <input
+                            type="number"
+                            id="m_kalinlik"
+                            class="form-control"
+                            placeholder="0">
+
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col">
+
+                        <label>Adet</label>
+
+                        <input
+                            type="number"
+                            id="m_adet"
+                            class="form-control"
+                            value="1">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label>Fire (%)</label>
+
+                        <input
+                            type="number"
+                            id="m_fire"
+                            class="form-control"
+                            value="20">
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="btn-add"
+                    onclick="m3Ekle()">
+
+                    Kereste Parça Ekle
+
+                </button>
+
             </div>
+
         </div>
+
+
         <div class="card">
+
             <h3>Eklenen Hammaddeler</h3>
-            <ul id="hammadde-list" class="item-list"></ul>
+
+            <ul
+                id="hammadde-list"
+                class="item-list">
+            </ul>
+
         </div>
+
     </div>
 
+
+
+    <!-- ========================= -->
     <!-- CNC -->
+    <!-- ========================= -->
+
     <div id="cnc" class="tab-content">
+
         <div class="card">
+
             <h3>CNC İşleme Maliyeti</h3>
-            <div class="form-group"><label>Saatlik Ücret (TL)</label><input type="number" id="cnc_saatlik" class="form-control" placeholder="1000"></div>
-            <div class="row">
-                <div class="col"><label>Süre (Dk)</label><input type="number" id="cnc_sure" class="form-control" placeholder="0"></div>
-                <div class="col"><label>Hazırlık (Dk)</label><input type="number" id="cnc_hazirlik" class="form-control" value="15"></div>
+
+
+            <div class="form-group">
+
+                <label>Saatlik Ücret (TL)</label>
+
+                <input
+                    type="number"
+                    id="cnc_saatlik"
+                    class="form-control"
+                    placeholder="1000">
+
             </div>
-            <button class="btn-add" onclick="cncEkle()">CNC Maliyeti Ekle</button>
+
+
+            <div class="row">
+
+                <div class="col">
+
+                    <label>Süre (Dk)</label>
+
+                    <input
+                        type="number"
+                        id="cnc_sure"
+                        class="form-control"
+                        placeholder="0">
+
+                </div>
+
+                <div class="col">
+
+                    <label>Hazırlık (Dk)</label>
+
+                    <input
+                        type="number"
+                        id="cnc_hazirlik"
+                        class="form-control"
+                        value="15">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn-add"
+                onclick="cncEkle()">
+
+                CNC Maliyeti Ekle
+
+            </button>
+
         </div>
+
+
         <div class="card">
+
             <h3>CNC Kaydı</h3>
-            <ul id="cnc-list" class="item-list"></ul>
+
+            <ul
+                id="cnc-list"
+                class="item-list">
+            </ul>
+
         </div>
+
     </div>
 
-    <!-- CAD/CAM -->
+
+
+    <!-- ========================= -->
+    <!-- CAD / CAM -->
+    <!-- ========================= -->
+
     <div id="cadcam" class="tab-content">
+
         <div class="card">
+
             <h3>CAD/CAM Tasarım</h3>
-            <div class="form-group"><label>Saatlik Ücret (TL)</label><input type="number" id="cad_saatlik" class="form-control" placeholder="750"></div>
-            <div class="row">
-                <div class="col"><label>Süre (Saat)</label><input type="number" id="cad_sure" class="form-control" placeholder="1"></div>
-                <div class="col"><label>Ekstra (TL)</label><input type="number" id="cad_ekstra" class="form-control" placeholder="0"></div>
+
+
+            <div class="form-group">
+
+                <label>Saatlik Ücret (TL)</label>
+
+                <input
+                    type="number"
+                    id="cad_saatlik"
+                    class="form-control"
+                    placeholder="750">
+
             </div>
-            <button class="btn-add" onclick="cadEkle()">Tasarım Ekle</button>
+
+
+            <div class="row">
+
+                <div class="col">
+
+                    <label>Süre (Saat)</label>
+
+                    <input
+                        type="number"
+                        id="cad_sure"
+                        class="form-control"
+                        placeholder="1">
+
+                </div>
+
+                <div class="col">
+
+                    <label>Ekstra (TL)</label>
+
+                    <input
+                        type="number"
+                        id="cad_ekstra"
+                        class="form-control"
+                        placeholder="0">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn-add"
+                onclick="cadEkle()">
+
+                Tasarım Ekle
+
+            </button>
+
         </div>
+
+
         <div class="card">
+
             <h3>Tasarım Kaydı</h3>
-            <ul id="cad-list" class="item-list"></ul>
+
+            <ul
+                id="cad-list"
+                class="item-list">
+            </ul>
+
         </div>
+
     </div>
 
+
+
+    <!-- ========================= -->
     <!-- İŞÇİLİK & HIRDAVAT -->
+    <!-- ========================= -->
+
     <div id="ekstra" class="tab-content">
+
         <div class="card">
+
             <h3>Hırdavat</h3>
-            <div class="form-group"><label>Ad</label><input type="text" id="h_ad" class="form-control" placeholder="Menteşe"></div>
+
+
+            <div class="form-group">
+
+                <label>Ad</label>
+
+                <input
+                    type="text"
+                    id="h_ad"
+                    class="form-control"
+                    placeholder="Menteşe">
+
+            </div>
+
+
             <div class="row">
-                <div class="col"><label>Birim Fiyat</label><input type="number" id="h_fiyat" class="form-control" placeholder="0"></div>
-                <div class="col"><label>Adet</label><input type="number" id="h_adet" class="form-control" value="1"></div>
+
+                <div class="col">
+
+                    <label>Birim Fiyat</label>
+
+                    <input
+                        type="number"
+                        id="h_fiyat"
+                        class="form-control"
+                        placeholder="0">
+
+                </div>
+
+                <div class="col">
+
+                    <label>Adet</label>
+
+                    <input
+                        type="number"
+                        id="h_adet"
+                        class="form-control"
+                        value="1">
+
+                </div>
+
             </div>
-            <button class="btn-add" onclick="hirdavatEkle()">Hırdavat Ekle</button>
+
+
+            <button
+                class="btn-add"
+                onclick="hirdavatEkle()">
+
+                Hırdavat Ekle
+
+            </button>
+
         </div>
+
+
         <div class="card">
+
             <h3>İşçilik & Sarf</h3>
-            <div class="form-group"><label>İşlem Adı</label><input type="text" id="i_ad" class="form-control" placeholder="Zımpara"></div>
-            <div class="form-group"><label>Tutar (TL)</label><input type="number" id="i_tutar" class="form-control" placeholder="0"></div>
-            <button class="btn-add" onclick="iscilikEkle()">İşçilik Ekle</button>
-        </div>
-        <div class="card">
-            <h3>Eklenenler</h3>
-            <ul id="ekstra-list" class="item-list"></ul>
-        </div>
-    </div>
 
-    <!-- ÖZET -->
-    <div id="ozet" class="tab-content">
-        <div class="card summary-card">
-            <h3>Maliyet Özeti</h3>
-            <div class="summary-row"><span>Hammadde:</span><span id="sum_hammadde">0.00 TL</span></div>
-            <div class="summary-row"><span>CNC Kesim:</span><span id="sum_cnc">0.00 TL</span></div>
-            <div class="summary-row"><span>CAD/CAM:</span><span id="sum_cad">0.00 TL</span></div>
-            <div class="summary-row"><span>Hırdavat:</span><span id="sum_hirdavat">0.00 TL</span></div>
-            <div class="summary-row"><span>İşçilik:</span><span id="sum_iscilik">0.00 TL</span></div>
-            
-            <div class="form-group" style="margin-top:15px; border-top:1px dashed rgba(255,255,255,0.2); padding-top:15px;">
-                <label style="color:white;">Kâr / Genel Gider (%)</label>
-                <input type="number" id="genel_gider" class="form-control" value="0" oninput="hesaplaOzet()">
+
+            <div class="form-group">
+
+                <label>İşlem Adı</label>
+
+                <input
+                    type="text"
+                    id="i_ad"
+                    class="form-control"
+                    placeholder="Zımpara">
+
             </div>
-            <div class="summary-total"><span>TOPLAM:</span><span id="sum_total">0.00 TL</span></div>
+
+
+            <div class="form-group">
+
+                <label>Tutar (TL)</label>
+
+                <input
+                    type="number"
+                    id="i_tutar"
+                    class="form-control"
+                    placeholder="0">
+
+            </div>
+
+
+            <button
+                class="btn-add"
+                onclick="iscilikEkle()">
+
+                İşçilik Ekle
+
+            </button>
+
         </div>
-    </div>
 
-    <script>
-        let appData = { hammadde: [], cnc: [], cad: [], ekstra: [] };
 
-        window.onload = function() {
-            let kayitli = localStorage.getItem('maydinwood_v2');
-            if(kayitli) {
-                try { appData = JSON.parse(kayitli); } catch(e) {}
-            }
-            listeleriGuncelle();
-        };
+        <div class="card">
 
-        function verileriKaydet() {
-            localStorage.setItem('maydinwood_v2', JSON.stringify(appData));
-            listeleriGuncelle();
-        }
+            <h3>Eklenenler</h3>
 
-        function sekmeDegis(hedefID) {
-            let içerikler = document.getElementsByClassName('tab-content');
-            for(let i = 0; i < içerikler.length; i++) {
-                içerikler[i].classList.remove('active');
-            }
-            
-            let butonlar = document.getElementsByClassName('tab-btn');
-            for(let i = 0; i < butonlar.length; i++) {
-                butonlar[i].classList.remove('active');
-            }
-            
-            let hedefDiv = document.getElementById(hedefID);
-            let hedefButon = document.getElementById('btn-tab-' + hedefID);
-
-            if(hedefDiv) hedefDiv.classList.add('active');
-            if(hedefButon) hedefButon.classList.add('active');
-
-            if(hedefID === 'ozet') {
-                hesaplaOzet();
-            }
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function malzemeTipDegis(tip) {
-            document.getElementById('tbtn-panel').classList.remove('active');
-            document.getElementById('tbtn-m3').classList.remove('active');
-            document.getElementById('sec-panel').classList.remove('active');
-            document.getElementById('sec-m3').classList.remove('active');
-
-            document.getElementById('tbtn-' + tip).classList.add('active');
-            document.getElementById('sec-' + tip).classList.add('active');
-        }
-
-        function panelEkle() {
-            let ad = document.getElementById('p_ad').value || 'Panel Parça';
-            let plakaEn = parseFloat(document.getElementById('p_plaka_en').value) || 210;
-            let plakaBoy = parseFloat(document.getElementById('p_plaka_boy').value) || 280;
-            let fiyat = parseFloat(document.getElementById('p_fiyat').value) || 0;
-            let pEn = parseFloat(document.getElementById('p_parca_en').value) || 0;
-            let pBoy = parseFloat(document.getElementById('p_parca_boy').value) || 0;
-            let adet = parseInt(document.getElementById('p_adet').value) || 1;
-            let fire = (parseFloat(document.getElementById('p_fire').value) || 0) / 100;
-
-            if(!fiyat || !pEn || !pBoy) { alert('Lütfen fiyat ve parça ölçülerini girin.'); return; }
-
-            let tutar = ((fiyat / (plakaEn * plakaBoy)) * (pEn * pBoy * adet)) * (1 + fire);
-            
-            appData.hammadde.push({ id: Date.now(), ad: ad, detay: `${pEn}x${pBoy} cm (${adet} Ad.)`, tutar: tutar });
-            verileriKaydet();
-        }
-
-        function m3Ekle() {
-            let ad = document.getElementById('m_ad').value || 'Kereste';
-            let fiyat = parseFloat(document.getElementById('m_fiyat').value) || 0;
-            let en = (parseFloat(document.getElementById('m_en').value) || 0) / 100;
-            let boy = (parseFloat(document.getElementById('m_boy').value) || 0) / 100;
-            let kalinlik = (parseFloat(document.getElementById('m_kalinlik').value) || 0) / 100;
-            let adet = parseInt(document.getElementById('m_adet').value) || 1;
-            let fire = (parseFloat(document.getElementById('m_fire').value) || 0) / 100;
-
-            if(!fiyat || !en || !boy || !kalinlik) { alert('Tüm alanları doldurun.'); return; }
-
-            let tutar = (en * boy * kalinlik * adet * fiyat) * (1 + fire);
-            appData.hammadde.push({ id: Date.now(), ad: ad, detay: `Kereste (${adet} Ad.)`, tutar: tutar });
-            verileriKaydet();
-        }
-
-        function cncEkle() {
-            let saatlik = parseFloat(document.getElementById('cnc_saatlik').value) || 0;
-            let sure = parseFloat(document.getElementById('cnc_sure').value) || 0;
-            let hazirlik = parseFloat(document.getElementById('cnc_hazirlik').value) || 0;
-            if(!saatlik) { alert('Saatlik ücret giriniz.'); return; }
-
-            let toplamSaat = (sure + hazirlik) / 60;
-            if(toplamSaat < 1 && (sure + hazirlik) > 0) toplamSaat = 1;
-
-            appData.cnc = [{ id: Date.now(), ad: 'CNC Kesim', detay: `${sure+hazirlik} Dk.`, tutar: toplamSaat * saatlik }];
-            verileriKaydet();
-        }
-
-        function cadEkle() {
-            let saatlik = parseFloat(document.getElementById('cad_saatlik').value) || 0;
-            let sure = parseFloat(document.getElementById('cad_sure').value) || 0;
-            let ekstra = parseFloat(document.getElementById('cad_ekstra').value) || 0;
-
-            appData.cad = [{ id: Date.now(), ad: 'CAD/CAM Tasarım', detay: `${sure} Saat`, tutar: (saatlik * sure) + ekstra }];
-            verileriKaydet();
-        }
-
-        function hirdavatEkle() {
-            let ad = document.getElementById('h_ad').value || 'Hırdavat';
-            let fiyat = parseFloat(document.getElementById('h_fiyat').value) || 0;
-            let adet = parseFloat(document.getElementById('h_adet').value) || 1;
-            if(!fiyat) return;
-
-            appData.ekstra.push({ id: Date.now(), tip: 'hirdavat', ad: ad, detay: `${adet} Adet`, tutar: fiyat * adet });
-            verileriKaydet();
-        }
-
-        function iscilikEkle() {
-            let ad = document.getElementById('i_ad').value || 'İşçilik';
-            let tutar = parseFloat(document.getElementById('i_tutar').value) || 0;
-            if(!tutar) return;
-
-            appData.ekstra.push({ id: Date.now(), tip: 'iscilik', ad: ad, detay: 'Sabit', tutar: tutar });
-            verileriKaydet();
-        }
-
-        function ogeSil(kategori, id) {
-            appData[kategori] = appData[kategori].filter(x => x.id !== id);
-            verileriKaydet();
-        }
-
-        function temizleSistemi() {
-            if(confirm('Tüm veriler sıfırlansın mı?')) {
-                appData = { hammadde: [], cnc: [], cad: [], ekstra: [] };
-                verileriKaydet();
-            }
-        }
-
-        function listeleriGuncelle() {
-            let doldur = (id, dizi, kat) => {
-                let el = document.getElementById(id);
-                if(!el) return;
-                el.inner
+            <ul
+                id="ekstra-list"
+      
