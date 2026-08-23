@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAYDINWOOD - CNC & Ahşap Maliyet Hesaplayıcı</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b1329">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -42,22 +49,15 @@
             outline: none; 
             box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); 
         }
-        .tab-btn {
-            transition: all 0.2s ease;
-        }
+        .tab-btn { transition: all 0.2s ease; }
         .tab-btn.active { 
             border-bottom: 3px solid #38bdf8; 
             color: #38bdf8; 
             font-weight: 600; 
             background-color: rgba(56, 189, 248, 0.08); 
         }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @media print {
             .no-print { display: none !important; }
             body { background: white; color: black; }
@@ -112,7 +112,6 @@
 
         <!-- ================= TAB 1: MALZEME & PARÇALAR ================= -->
         <div id="tab-material" class="tab-content space-y-6">
-            
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
                     <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
@@ -151,7 +150,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Fire / Bağlantı / Testere Payı (%)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Fire / Pay (%)</label>
                         <input type="number" id="wasteRate" value="15" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
 
@@ -163,14 +162,13 @@
                 </div>
             </div>
 
-            <!-- Parça Ekleme Listesi Card -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800 mb-4">
                     <div>
                         <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
                             <i class="fa-solid fa-list-check"></i> Kesilecek Parçalar Listesi
                         </h2>
-                        <p class="text-xs text-slate-400">Projenizdeki tüm parçaları ekleyin, plaka kullanımı ve bant metrajı otomatik hesaplansın.</p>
+                        <p class="text-xs text-slate-400">Projedeki tüm parçaları ekleyin, plaka kullanımı ve bant metrajı otomatik hesaplansın.</p>
                     </div>
                     <button onclick="addPartRow()" class="bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-lg shadow-sky-900/30 transition">
                         <i class="fa-solid fa-plus"></i> Yeni Parça Ekle
@@ -185,7 +183,7 @@
                                 <th class="p-3">En (mm)</th>
                                 <th class="p-3">Boy (mm)</th>
                                 <th class="p-3">Adet</th>
-                                <th class="p-3 text-center">Kenar Bandı Seçimi</th>
+                                <th class="p-3 text-center">Kenar Bandı</th>
                                 <th class="p-3 text-right">Alan (m²)</th>
                                 <th class="p-3 text-center rounded-r-lg">İşlem</th>
                             </tr>
@@ -214,7 +212,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <!-- ================= TAB 2: CNC İŞLEME ================= -->
@@ -232,27 +229,22 @@
                         <label class="block text-xs font-medium text-slate-300 mb-1">Takım / Bıçak Çapı (mm)</label>
                         <input type="number" id="cncToolDia" value="6" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Kesim Hızı / Feed Rate (mm/dk)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Kesim Hızı (mm/dk)</label>
                         <input type="number" id="cncFeedRate" value="4000" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">Tahmini CNC Süresi (Dakika)</label>
                         <input type="number" id="cncTimeMin" value="45" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">CNC Saatlik Çalışma Ücreti (TL/Saat)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">CNC Saatlik Ücret (TL/Saat)</label>
                         <input type="number" id="cncHourlyRate" value="600" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Vakum, Bıçak Amortisman & Elektrik (TL)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Vakum & Amortisman (TL)</label>
                         <input type="number" id="cncExtraCost" value="100" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div class="flex items-end">
                         <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 w-full text-xs text-slate-300">
                             CNC Toplam Maliyeti: <span id="cncTotalCostDisp" class="font-bold text-sky-400">0.00 TL</span>
@@ -274,28 +266,24 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">CAD (3D Çizim & Tasarım) Süresi (Saat)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">CAD (3D Çizim) Süresi (Saat)</label>
                         <input type="number" step="0.1" id="cadHours" value="1.5" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">CAM (Takım Yolu & G-Code) Süresi (Saat)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">CAM (G-Code) Süresi (Saat)</label>
                         <input type="number" step="0.1" id="camHours" value="0.5" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Tasarım / Mühendislik Saatlik Ücreti (TL/Saat)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Tasarım Ücreti (TL/Saat)</label>
                         <input type="number" id="cadHourlyRate" value="400" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Sabit Kurulum / Hazırlık Ücreti (TL)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Sabit Hazırlık Ücreti (TL)</label>
                         <input type="number" id="cadSetupFee" value="150" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div class="md:col-span-2 flex items-end">
                         <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 w-full text-xs text-slate-300">
-                            CAD/CAM Toplam Tasarım Maliyeti: <span id="cadTotalCostDisp" class="font-bold text-sky-400">0.00 TL</span>
+                            CAD/CAM Tasarım Maliyeti: <span id="cadTotalCostDisp" class="font-bold text-sky-400">0.00 TL</span>
                         </div>
                     </div>
                 </div>
@@ -317,29 +305,28 @@
                         <label class="block text-xs font-medium text-slate-300 mb-1">Kenar Bandı Birim Fiyatı (TL/Metre)</label>
                         <input type="number" id="edgeBandMeterPrice" value="12" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Zımpara / Yüzey İşlem / Vernik / Boya (TL)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Zımpara / Vernik / Boya (TL)</label>
                         <input type="number" id="surfaceCost" value="200" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Aksesuar & Bağlantı Elemanları (Minifix, Vida, Menteşe vb.) (TL)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Aksesuar & Vida/Bağlantı (TL)</label>
                         <input type="number" id="hardwareCost" value="350" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Atölye Montaj & Hazırlık Süresi (Saat)</label>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Atölye Montaj Süresi (Saat)</label>
                         <input type="number" step="0.5" id="laborHours" value="2" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">Atölye İşçilik Saat Ücreti (TL/Saat)</label>
                         <input type="number" id="laborHourlyRate" value="300" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-
                     <div>
                         <label class="block text-xs font-medium text-slate-300 mb-1">Paketleme & Lojistik / Nakliye (TL)</label>
                         <input type="number" id="shippingCost" value="250" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
                     </div>
-     
+                </div>
+            </div>
+        </div>
+
+        <!-- =========
