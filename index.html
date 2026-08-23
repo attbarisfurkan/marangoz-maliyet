@@ -1,320 +1,621 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maydinwood - Ahşap & CNC Maliyet Pro</title>
-    
-    <!-- PWA & Tam Ekran Mobil Ayarları -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="application-name" content="Maydinwood">
-    <meta name="apple-mobile-web-app-title" content="Maydinwood">
-    
-    <!-- Manifest Bağlantısı -->
-    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BoyutLab - CNC & Ahşap Maliyet Hesaplayıcı</title>
+  <meta name="theme-color" content="#1e293b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href='data:application/json,{"name":"BoyutLab Maliyet","short_name":"BoyutLab","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#1e293b","icons":[{"src":"https://via.placeholder.com/192/1e293b/ffffff?text=BL","sizes":"192x192","type":"image/png"}]}'>
+  
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
 
-    <!-- Tailwind CSS & FontAwesome İkonları -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-    <style>
-        body { -webkit-tap-highlight-color: transparent; user-select: none; }
-        input, select, textarea { user-select: text; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-    </style>
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .summary-box {
+      background: #090d16;
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .summary-row.total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--success);
+      border-bottom: none;
+      padding-top: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      text-align: center;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .quote-output {
+      width: 100%;
+      height: 140px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      resize: vertical;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      background: #334155;
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen pb-16 font-sans">
+<body>
 
-    <!-- Üst Bar / Header -->
-    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
-        <div class="max-w-2xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2.5">
-                <div class="bg-amber-500/20 p-2 rounded-lg border border-amber-500/30">
-                    <i class="fa-solid fa-saw-blade text-amber-500 text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base text-amber-400 leading-tight">Maydinwood</h1>
-                    <p class="text-[11px] text-slate-400">Ahşap & CNC Maliyet Hesabı</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button onclick="resetAllData()" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
-                    <i class="fa-solid fa-rotate-left"></i> Sıfırla
-                </button>
-            </div>
-        </div>
+<div class="container">
+  <header>
+    <h1>BOYUTLAB / MAYDINWOOD</h1>
+    <p>CNC Otomasyonu & Ahşap Maliyet Hesaplayıcı (PWA)</p>
+  </header>
 
-        <!-- Ana Menü / Tablar -->
-        <nav class="flex text-xs border-t border-slate-700/80 bg-slate-800/95 backdrop-blur overflow-x-auto">
-            <button onclick="switchTab('tab-1')" id="btn-tab-1" class="tab-btn flex-1 py-3 px-2 text-center font-semibold text-amber-500 border-b-2 border-amber-500 whitespace-nowrap">
-                <i class="fa-solid fa-tree mr-1"></i> 1. Ahşap & Plaka
-            </button>
-            <button onclick="switchTab('tab-2')" id="btn-tab-2" class="tab-btn flex-1 py-3 px-2 text-center font-semibold text-slate-400 border-b-2 border-transparent whitespace-nowrap">
-                <i class="fa-solid fa-gears mr-1"></i> 2. CAD/CAM & CNC
-            </button>
-            <button onclick="switchTab('tab-3')" id="btn-tab-3" class="tab-btn flex-1 py-3 px-2 text-center font-semibold text-slate-400 border-b-2 border-transparent whitespace-nowrap">
-                <i class="fa-solid fa-hammer mr-1"></i> 3. Yüzey & İşçilik
-            </button>
-            <button onclick="switchTab('tab-4')" id="btn-tab-4" class="tab-btn flex-1 py-3 px-2 text-center font-semibold text-slate-400 border-b-2 border-transparent whitespace-nowrap">
-                <i class="fa-solid fa-file-invoice-dollar mr-1"></i> 4. Özet & Teklif
-            </button>
-        </nav>
-    </header>
+  <!-- 1. MALZEME / PLAKA HESABI -->
+  <div class="card">
+    <div class="card-title">
+      <span>1. Malzeme & Plaka Maliyeti</span>
+      <span class="badge">Ham Madde</span>
+    </div>
+    <div class="form-group">
+      <label>Malzeme Türü</label>
+      <select id="matType">
+        <option value="mdf">MDF / Ham MDF</option>
+        <option value="lam_mdf">MDF Lam / Suntalam</option>
+        <option value="plywood">Kontraplak / Plywood</option>
+        <option value="masif">Masif Ahşap / Panel</option>
+        <option value="aluminyum">Alüminyum Kompozit</option>
+        <option value="pleksi">Akrilik / Pleksi</option>
+      </select>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Plaka En (mm)</label>
+        <input type="number" id="boardW" value="2800">
+      </div>
+      <div class="form-group">
+        <label>Plaka Boy (mm)</label>
+        <input type="number" id="boardH" value="2100">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Plaka Fiyatı (TL)</label>
+        <input type="number" id="boardPrice" value="2500">
+      </div>
+      <div class="form-group">
+        <label>Fire / Bağlantı Payı (%)</label>
+        <input type="number" id="wastePercent" value="15">
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Kullanılan En (mm)</label>
+        <input type="number" id="partW" value="1200">
+      </div>
+      <div class="form-group">
+        <label>Kullanılan Boy (mm)</label>
+        <input type="number" id="partH" value="800">
+      </div>
+      <div class="form-group">
+        <label>Parça Adedi</label>
+        <input type="number" id="partQty" value="1">
+      </div>
+    </div>
+  </div>
 
-    <!-- Ana İçerik Alanı -->
-    <main class="max-w-2xl mx-auto px-4 pt-4">
+  <!-- 2. CNC & MAKİNE OTOMASYONU -->
+  <div class="card">
+    <div class="card-title">
+      <span>2. CNC & Spindle Otomasyonu</span>
+      <span class="badge">9kW - 24kW</span>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Spindle / Güç Tüketimi (kW)</label>
+        <input type="number" id="cncPowerKw" value="9" step="0.5">
+      </div>
+      <div class="form-group">
+        <label>Elektrik Birim Fiyatı (TL/kWh)</label>
+        <input type="number" id="elecPrice" value="4.5" step="0.1">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>CNC Kesim / İşleme Süresi (Dk)</label>
+        <input type="number" id="cncTimeMin" value="45">
+      </div>
+      <div class="form-group">
+        <label>Bıçak & Aşınma Payı (TL/Saat)</label>
+        <input type="number" id="toolWearRate" value="120">
+      </div>
+    </div>
+  </div>
 
-        <!-- MENÜ 1: AHŞAP, PLAKA VE MALZEME HESABI -->
-        <section id="tab-1" class="tab-content active space-y-4">
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3 shadow-sm">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="font-bold text-amber-400 text-sm flex items-center gap-2">
-                            <i class="fa-solid fa-layer-group"></i> Ahşap / Plaka Parçaları
-                        </h2>
-                        <p class="text-[11px] text-slate-400">Ölçü, adet ve fire oranına göre malzeme hesabı</p>
-                    </div>
-                    <button onclick="addWoodRow()" class="text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1 shadow">
-                        <i class="fa-solid fa-plus"></i> Parça Ekle
-                    </button>
-                </div>
+  <!-- 3. CAD / CAM VE TASARIM SÜRESİ -->
+  <div class="card">
+    <div class="card-title">
+      <span>3. CAD / CAM & Tasarım Süreçleri</span>
+      <span class="badge">Mühendislik</span>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>CAD (3D Çizim) Süresi (Saat)</label>
+        <input type="number" id="cadHours" value="1" step="0.5">
+      </div>
+      <div class="form-group">
+        <label>CAD Birim Ücreti (TL/Saat)</label>
+        <input type="number" id="cadRate" value="300">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>CAM (Bıçak Yolu) Süresi (Saat)</label>
+        <input type="number" id="camHours" value="0.5" step="0.5">
+      </div>
+      <div class="form-group">
+        <label>CAM Birim Ücreti (TL/Saat)</label>
+        <input type="number" id="camRate" value="250">
+      </div>
+    </div>
+  </div>
 
-                <div id="wood-list" class="space-y-3">
-                    <!-- Dinamik Parça Satırları -->
-                </div>
-            </div>
+  <!-- 4. YÜZEY İŞLEM, İŞÇİLİK VE NAKLİYE -->
+  <div class="card">
+    <div class="card-title">
+      <span>4. Yüzey İşlem, İşçilik & Hırdavat</span>
+      <span class="badge">Atölye</span>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Zımpara / Yağ / Boya / Cila (TL)</label>
+        <input type="number" id="finishingCost" value="150">
+      </div>
+      <div class="form-group">
+        <label>Hırdavat / Kulp / Vida (TL)</label>
+        <input type="number" id="hardwareCost" value="80">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Montaj / Atölye İşçiliği (Saat)</label>
+        <input type="number" id="laborHours" value="2">
+      </div>
+      <div class="form-group">
+        <label>İşçilik Saat Ücreti (TL)</label>
+        <input type="number" id="laborRate" value="200">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Ambalaj & Nakliye (TL)</label>
+        <input type="number" id="shippingCost" value="250">
+      </div>
+      <div class="form-group">
+        <label>Atölye Sabit Gider Payı (%)</label>
+        <input type="number" id="overheadPercent" value="10">
+      </div>
+    </div>
+  </div>
 
-            <!-- Kenar Bandı & Ekstra Malzemeler -->
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
-                <h3 class="font-semibold text-amber-400 text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-tape"></i> Kenar Bandı & Ekstra Kaplama
-                </h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Toplam PVC/Bant (Metre)</label>
-                        <input type="number" id="band-meters" value="0" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Bant Metre Fiyatı (TL/m)</label>
-                        <input type="number" id="band-price" value="12" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-            </div>
+  <!-- 5. KÂR MARJI VE KDV -->
+  <div class="card">
+    <div class="card-title">
+      <span>5. Kâr Marjı & Fiyatlandırma</span>
+      <span class="badge">Satış</span>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Hedef Kâr Marjı (%) [veya 4x Mantığı]</label>
+        <input type="number" id="profitPercent" value="50">
+      </div>
+      <div class="form-group">
+        <label>KDV Oranı (%)</label>
+        <select id="vatPercent">
+          <option value="20" selected>%20 KDV</option>
+          <option value="10">%10 KDV</option>
+          <option value="0">%0 (Muaf)</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-            <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 flex justify-between items-center text-xs shadow-inner">
-                <span class="text-slate-300 font-medium">Toplam Malzeme Maliyeti:</span>
-                <span id="total-wood-cost" class="font-bold text-amber-400 text-base">0.00 TL</span>
-            </div>
-        </section>
+  <!-- ÖZET VE SONUÇ EKRANI -->
+  <div class="summary-box">
+    <div class="summary-row">
+      <span>Net Malzeme Maliyeti (Fire Dahil):</span>
+      <span id="resMaterial">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>CNC Elektrik Tüketimi:</span>
+      <span id="resElec">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>CNC Bıçak & Aşınma Maliyeti:</span>
+      <span id="resTool">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>CAD / CAM Tasarım Maliyeti:</span>
+      <span id="resCadCam">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>Atölye İşçilik & Yüzey İşlem:</span>
+      <span id="resLabor">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>Hırdavat, Nakliye & Sabit Gider:</span>
+      <span id="resExtra">0 TL</span>
+    </div>
+    <div class="summary-row" style="font-weight: bold; color: #38bdf8;">
+      <span>Toplam Yalın Maliyet:</span>
+      <span id="resBaseTotal">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>Kâr Miktarı:</span>
+      <span id="resProfit">0 TL</span>
+    </div>
+    <div class="summary-row">
+      <span>KDV Tutar:</span>
+      <span id="resVat">0 TL</span>
+    </div>
+    <div class="summary-row total">
+      <span>Nihai Müşteri Satış Fiyatı:</span>
+      <span id="resFinalTotal">0 TL</span>
+    </div>
+  </div>
 
-        <!-- MENÜ 2: CAD/CAM TASARIM & CNC İŞLEME -->
-        <section id="tab-2" class="tab-content space-y-4">
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-                <h2 class="font-bold text-amber-400 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-laptop-code"></i> 1. CAD / CAM Tasarım & Çizim
-                </h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Çizim/CAM Süresi (Dakika)</label>
-                        <input type="number" id="cad-time" value="20" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Tasarım Saat Ücreti (TL/Saat)</label>
-                        <input type="number" id="cad-rate" value="300" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-            </div>
+  <!-- TEKLİF METNİ OLUŞTURUCU -->
+  <div class="card" style="margin-top:20px;">
+    <div class="card-title">
+      <span>Müşteri Teklif Metni</span>
+      <button class="btn btn-secondary" style="width:auto; padding:4px 12px; font-size:0.75rem;" onclick="copyQuote()">Teklifi Kopyala</button>
+    </div>
+    <div class="form-group">
+      <label>Müşteri / Proje Adı</label>
+      <input type="text" id="clientName" value="Sayın Müşterimiz" oninput="calculate()">
+    </div>
+    <textarea id="quoteArea" class="quote-output" readonly></textarea>
+  </div>
 
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-                <h2 class="font-bold text-amber-400 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-gears"></i> 2. CNC Kesim & İşleme
-                </h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">CNC İşleme Süresi (Dakika)</label>
-                        <input type="number" id="cnc-time" value="45" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">CNC Makine Ücreti (TL/Saat)</label>
-                        <input type="number" id="cnc-rate" value="700" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
+  <!-- VERİ YÖNETİMİ & BUTONLAR -->
+  <div class="action-buttons">
+    <button class="btn btn-secondary" onclick="exportData()">Verileri İndir (JSON)</button>
+    <button class="btn btn-danger" onclick="resetForm()">Formu Sıfırla</button>
+  </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Uç / Takım Aşınma Payı (TL)</label>
-                        <input type="number" id="cnc-bit-cost" value="60" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Vakum & Elektrik Gideri (TL)</label>
-                        <input type="number" id="cnc-elec-cost" value="50" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-            </div>
+</div>
 
-            <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 flex justify-between items-center text-xs shadow-inner">
-                <span class="text-slate-300 font-medium">Toplam CAD/CAM & CNC Maliyeti:</span>
-                <span id="total-cnc-cost" class="font-bold text-amber-400 text-base">0.00 TL</span>
-            </div>
-        </section>
+<script>
+  // Otomatik Hesaplama Fonksiyonu
+  function calculate() {
+    // 1. Malzeme Hesaplama
+    const boardW = parseFloat(document.getElementById('boardW').value) || 1;
+    const boardH = parseFloat(document.getElementById('boardH').value) || 1;
+    const boardPrice = parseFloat(document.getElementById('boardPrice').value) || 0;
+    const wastePercent = parseFloat(document.getElementById('wastePercent').value) || 0;
+    
+    const partW = parseFloat(document.getElementById('partW').value) || 0;
+    const partH = parseFloat(document.getElementById('partH').value) || 0;
+    const partQty = parseFloat(document.getElementById('partQty').value) || 1;
 
-        <!-- MENÜ 3: YÜZEY İŞLEM, İŞÇİLİK & AKSEASUAR -->
-        <section id="tab-3" class="tab-content space-y-4">
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-                <h2 class="font-bold text-amber-400 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-paint-roller"></i> 1. Zımpara, Yağ & Boya
-                </h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Zımpara & Hazırlık İşçiliği (TL)</label>
-                        <input type="number" id="sanding-cost" value="150" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Yağ / Vernik / Boya Sarfı (TL)</label>
-                        <input type="number" id="finish-cost" value="200" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-            </div>
+    const boardAreaM2 = (boardW * boardH) / 1000000;
+    const partAreaM2 = ((partW * partH) / 1000000) * partQty;
+    
+    const rawMaterialCost = (partAreaM2 / boardAreaM2) * boardPrice;
+    const materialCost = rawMaterialCost * (1 + (wastePercent / 100));
 
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-                <h2 class="font-bold text-amber-400 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-hammer"></i> 2. Montaj İşçiliği & Aksesuar
-                </h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Montaj / El İşçiliği (Saat)</label>
-                        <input type="number" id="labor-hours" value="2" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">İşçilik Saat Ücreti (TL/Saat)</label>
-                        <input type="number" id="labor-rate" value="250" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
+    // 2. CNC & Güç Otomasyonu
+    const cncPowerKw = parseFloat(document.getElementById('cncPowerKw').value) || 0;
+    const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 0;
+    const cncTimeMin = parseFloat(document.getElementById('cncTimeMin').value) || 0;
+    const toolWearRate = parseFloat(document.getElementById('toolWearRate').value) || 0;
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Hırdavat (Vida/Menteşe/Kulp) (TL)</label>
-                        <input type="number" id="hardware-cost" value="120" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] text-slate-400 mb-1">Ambalaj & Nakliye / Teslimat (TL)</label>
-                        <input type="number" id="shipping-cost" value="200" oninput="calculateAll()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-            </div>
+    const cncTimeHours = cncTimeMin / 60;
+    const elecCost = (cncPowerKw * cncTimeHours) * elecPrice;
+    const toolWearCost = cncTimeHours * toolWearRate;
 
-            <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 flex justify-between items-center text-xs shadow-inner">
-                <span class="text-slate-300 font-medium">Toplam Yüzey & İşçilik Maliyeti:</span>
-                <span id="total-labor-cost" class="font-bold text-amber-400 text-base">0.00 TL</span>
-            </div>
-        </section>
+    // 3. CAD / CAM
+    const cadHours = parseFloat(document.getElementById('cadHours').value) || 0;
+    const cadRate = parseFloat(document.getElementById('cadRate').value) || 0;
+    const camHours = parseFloat(document.getElementById('camHours').value) || 0;
+    const camRate = parseFloat(document.getElementById('camRate').value) || 0;
 
-        <!-- MENÜ 4: ÖZET, KÂR ORANI & TEKLİF MÜŞTERİ METNİ -->
-        <section id="tab-4" class="tab-content space-y-4">
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-                <h2 class="font-bold text-amber-400 text-sm flex items-center gap-2">
-                    <i class="fa-solid fa-calculator"></i> Maliyet & Kâr Analizi
-                </h2>
+    const cadCamCost = (cadHours * cadRate) + (camHours * camRate);
 
-                <div class="space-y-2 text-xs divide-y divide-slate-700/60">
-                    <div class="flex justify-between py-1.5">
-                        <span class="text-slate-400">Ahşap, Plaka & Bant:</span>
-                        <span id="sum-wood" class="font-medium text-slate-200">0.00 TL</span>
-                    </div>
-                    <div class="flex justify-between py-1.5">
-                        <span class="text-slate-400">CAD/CAM & CNC İşleme:</span>
-                        <span id="sum-cnc" class="font-medium text-slate-200">0.00 TL</span>
-                    </div>
-                    <div class="flex justify-between py-1.5">
-                        <span class="text-slate-400">Yüzey İşlem, İşçilik & Nakliye:</span>
-                        <span id="sum-labor" class="font-medium text-slate-200">0.00 TL</span>
-                    </div>
-                    <div class="flex justify-between py-2 text-xs font-semibold text-slate-100 bg-slate-900/50 px-2 rounded">
-                        <span>Net Üretim Maliyeti:</span>
-                        <span id="sum-net-cost" class="text-amber-400">0.00 TL</span>
-                    </div>
-                </div>
+    // 4. Yüzey İşlem, İşçilik & Nakliye
+    const finishingCost = parseFloat(document.getElementById('finishingCost').value) || 0;
+    const hardwareCost = parseFloat(document.getElementById('hardwareCost').value) || 0;
+    const laborHours = parseFloat(document.getElementById('laborHours').value) || 0;
+    const laborRate = parseFloat(document.getElementById('laborRate').value) || 0;
+    const shippingCost = parseFloat(document.getElementById('shippingCost').value) || 0;
+    const overheadPercent = parseFloat(document.getElementById('overheadPercent').value) || 0;
 
-                <hr class="border-slate-700">
+    const laborCost = laborHours * laborRate;
+    const subTotalBeforeOverhead = materialCost + elecCost + toolWearCost + cadCamCost + finishingCost + hardwareCost + laborCost + shippingCost;
+    const overheadCost = subTotalBeforeOverhead * (overheadPercent / 100);
+    
+    const baseTotalCost = subTotalBeforeOverhead + overheadCost;
 
-                <div class="space-y-3">
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <label class="text-slate-300 font-medium">Hedef Kâr Oranı (%):</label>
-                            <span id="profit-margin-label" class="text-amber-400 font-bold">%35</span>
-                        </div>
-                        <input type="range" id="profit-rate" min="0" max="200" value="35" oninput="calculateAll()" class="w-full accent-amber-500 bg-slate-900 rounded-lg cursor-pointer">
-                    </div>
+    // 5. Kâr & KDV
+    const profitPercent = parseFloat(document.getElementById('profitPercent').value) || 0;
+    const vatPercent = parseFloat(document.getElementById('vatPercent').value) || 0;
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
-                            <span class="block text-[11px] text-slate-400">Net Kâr Miktarı</span>
-                            <span id="sum-profit-val" class="text-sm font-bold text-emerald-400">0.00 TL</span>
-                        </div>
-                        <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
-                            <span class="block text-[11px] text-slate-400">Satış Fiyatı (KDV Hariç)</span>
-                            <span id="sum-subtotal" class="text-sm font-bold text-white">0.00 TL</span>
-                        </div>
-                    </div>
+    const profitAmount = baseTotalCost * (profitPercent / 100);
+    const subTotalWithProfit = baseTotalCost + profitAmount;
+    const vatAmount = subTotalWithProfit * (vatPercent / 100);
+    const finalTotal = subTotalWithProfit + vatAmount;
 
-                    <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl text-center space-y-1">
-                        <span class="text-[11px] text-amber-300 font-medium uppercase tracking-wider block">Müşteriye Sunulacak Teklif Fiyatı (%20 KDV Dahil)</span>
-                        <span id="final-price" class="text-2xl font-black text-amber-400 block">0.00 TL</span>
-                    </div>
-                </div>
-            </div>
+    // Arayüzü Güncelle
+    document.getElementById('resMaterial').innerText = materialCost.toFixed(2) + " TL";
+    document.getElementById('resElec').innerText = elecCost.toFixed(2) + " TL";
+    document.getElementById('resTool').innerText = toolWearCost.toFixed(2) + " TL";
+    document.getElementById('resCadCam').innerText = cadCamCost.toFixed(2) + " TL";
+    document.getElementById('resLabor').innerText = (laborCost + finishingCost).toFixed(2) + " TL";
+    document.getElementById('resExtra').innerText = (hardwareCost + shippingCost + overheadCost).toFixed(2) + " TL";
+    document.getElementById('resBaseTotal').innerText = baseTotalCost.toFixed(2) + " TL";
+    document.getElementById('resProfit').innerText = profitAmount.toFixed(2) + " TL";
+    document.getElementById('resVat').innerText = vatAmount.toFixed(2) + " TL";
+    document.getElementById('resFinalTotal').innerText = finalTotal.toFixed(2) + " TL";
 
-            <!-- Müşteriye Hazır Teklif Metni Oluşturucu -->
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-semibold text-amber-400 text-xs flex items-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Müşteri WhatsApp / Mesaj Teklifi
-                    </h3>
-                    <button onclick="copyQuoteText()" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-1 rounded-lg transition flex items-center gap-1">
-                        <i class="fa-solid fa-copy"></i> Teklifi Kopyala
-                    </button>
-                </div>
-                <textarea id="quote-text" rows="5" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-300 font-mono focus:outline-none"></textarea>
-            </div>
-        </section>
+    // Teklif Metnini Güncelle
+    generateQuote(finalTotal, subTotalWithProfit, vatAmount, vatPercent);
 
-    </main>
+    // LocalStorage Otomatik Kayıt
+    saveToLocalStorage();
+  }
 
-    <script>
-        // Service Worker Kaydı (Android PWA Çalıştırma Motoru)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Aktif:', reg))
-                    .catch(err => console.log('Service Worker Hata:', err));
-            });
-        }
+  function generateQuote(finalTotal, subTotal, vatAmount, vatPercent) {
+    const clientName = document.getElementById('clientName').value || "Müşterimiz";
+    const partW = document.getElementById('partW').value;
+    const partH = document.getElementById('partH').value;
+    const partQty = document.getElementById('partQty').value;
+    
+    const quoteText = `Sayın ${clientName},
 
-        // Tab Geçiş Fonksiyonu
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('text-amber-500', 'border-amber-500');
-                btn.classList.add('text-slate-400', 'border-transparent');
-            });
+BoyutLab / Maydinwood bünyesinde özel CNC kesim ve ahşap işleme projeniz için hazırlanan maliyet teklifi aşağıdadır:
 
-            document.getElementById(tabId).classList.add('active');
-            const activeBtn = document.getElementById('btn-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-slate-400', 'border-transparent');
-                activeBtn.classList.add('text-amber-500', 'border-amber-500');
-            }
-        }
+• Ürün Ölçüleri: ${partW} mm x ${partH} mm (${partQty} Adet)
+• Tasarım, CAD/CAM, CNC İşleme ve Yüzey Uygulamaları Dahil
+• Ara Toplam: ${subTotal.toFixed(2)} TL
+• KDV (%${vatPercent}): ${vatAmount.toFixed(2)} TL
+-----------------------------------------------
+• GENEL TOPLAM: ${finalTotal.toFixed(2)} TL
 
-        // Ahşap Satırı Ekleme (Boy x En x Adet x Plaka Fiyatı / Fire Hesabı)
-        let woodCount = 0;
-        function addWoodRow(name = 'Masif Plaka / MDF', len = 280, width = 210, qty = 1, price = 1200, waste = 15) {
-            woodCount++;
-            const container = document.getElementById('wood-list');
-            const row = document.createElement('div');
-            row.className = 'bg-slate-900 p-3 rounded-lg border border-slate-700 space-y-2 wood-row';
-            row.id = 'wood-row-' + 
+* Teklifimiz 7 gün süreyle geçerlidir.
+* Teslimat süresi onay sonrası planlanacaktır.`;
+
+    document.getElementById('quoteArea').value = quoteText;
+  }
+
+  function copyQuote() {
+    const quoteArea = document.getElementById('quoteArea');
+    quoteArea.select();
+    document.execCommand('copy');
+    alert('Teklif metni panoya kopyalandı!');
+  }
+
+  function saveToLocalStorage() {
+    const inputs = document.querySelectorAll('input, select');
+    const data = {};
+    inputs.forEach(i => data[i.id] = i.value);
+    localStorage.setItem('boyutlab_calc_data', JSON.stringify(data));
+  }
+
+  function loadFromLocalStorage() {
+    const saved = localStorage.getItem('boyutlab_calc_data');
+    if (saved) {
+      const data = JSON.parse(saved);
+      Object.keys(data).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = data[id];
+      });
+    }
+    calculate();
+  }
+
+  function exportData() {
+    const saved = localStorage.getItem('boyutlab_calc_data');
+    if (!saved) return alert('Kaydedilmiş veri bulunamadı.');
+    const blob = new Blob([saved], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'boyutlab_hesap_yedek.json';
+    a.click();
+  }
+
+  function resetForm() {
+    if (confirm('Tüm verileri sıfırlamak istediğinize emin misiniz?')) {
+      localStorage.removeItem('boyutlab_calc_data');
+      location.reload();
+    }
+  }
+
+  // Tüm Input'lara Dinamik Dinleyici Ekle
+  document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  // Sayfa Yüklendiğinde Başlat
+  window.addEventListener('DOMContentLoaded', loadFromLocalStorage);
+
+  // Service Worker Entegrasyonu (Offline PWA)
+  if ('serviceWorker' in navigator) {
+    const swCode = `
+      self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => new Response('Çevrimdışı Çalışma Modu'))));
+    `;
+    const blob = new Blob([swCode], { type: 'text/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+  }
+</script>
+</body>
+</html>
