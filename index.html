@@ -218,7 +218,7 @@
                 <div class="col"><label>Birim Fiyat</label><input type="number" id="h_fiyat" class="form-control" placeholder="0"></div>
                 <div class="col"><label>Adet</label><input type="number" id="h_adet" class="form-control" value="1"></div>
             </div>
-            <button class="btn-add" onclick="hirdavatEkle()">Hırdavat Ekle</v>
+            <button class="btn-add" onclick="hirdavatEkle()">Hırdavat Ekle</button>
         </div>
         <div class="card">
             <h3>İşçilik & Sarf</h3>
@@ -251,10 +251,8 @@
     </div>
 
     <script>
-        // Global Hafıza Verileri
         let appData = { hammadde: [], cnc: [], cad: [], ekstra: [] };
 
-        // Sayfa açıldığında hafızadakileri yükle
         window.onload = function() {
             let kayitli = localStorage.getItem('maydinwood_v2');
             if(kayitli) {
@@ -268,29 +266,27 @@
             listeleriGuncelle();
         }
 
-        // KESİN ÇÖZÜM: Sekme Değiştirme Fonksiyonu
-        function sekmeDegis( hedefID ) {
-            // Tüm içerikleri gizle
+        function sekmeDegis(hedefID) {
             let içerikler = document.getElementsByClassName('tab-content');
             for(let i = 0; i < içerikler.length; i++) {
                 içerikler[i].classList.remove('active');
             }
             
-            // Tüm butonların aktifliğini kaldır
             let butonlar = document.getElementsByClassName('tab-btn');
             for(let i = 0; i < butonlar.length; i++) {
                 butonlar[i].classList.remove('active');
             }
             
-            // Seçilen sekme ve butonu aktif yap
-            document.getElementById(hedefID).classList.add('active');
-            document.getElementById('btn-tab-' + hedefID).classList.add('active');
+            let hedefDiv = document.getElementById(hedefID);
+            let hedefButon = document.getElementById('btn-tab-' + hedefID);
+
+            if(hedefDiv) hedefDiv.classList.add('active');
+            if(hedefButon) hedefButon.classList.add('active');
 
             if(hedefID === 'ozet') {
                 hesaplaOzet();
             }
             
-            // Sayfanın en üstüne hafifçe kaydır ki sekme tam görünsün
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -331,7 +327,7 @@
             let adet = parseInt(document.getElementById('m_adet').value) || 1;
             let fire = (parseFloat(document.getElementById('m_fire').value) || 0) / 100;
 
-            if(!fiyat || !en || !boy || !kalinlik) { alert.apply('Tüm alanları doldurun.'); return; }
+            if(!fiyat || !en || !boy || !kalinlik) { alert('Tüm alanları doldurun.'); return; }
 
             let tutar = (en * boy * kalinlik * adet * fiyat) * (1 + fire);
             appData.hammadde.push({ id: Date.now(), ad: ad, detay: `Kereste (${adet} Ad.)`, tutar: tutar });
@@ -387,4 +383,12 @@
         function temizleSistemi() {
             if(confirm('Tüm veriler sıfırlansın mı?')) {
                 appData = { hammadde: [], cnc: [], cad: [], ekstra: [] };
-                v
+                verileriKaydet();
+            }
+        }
+
+        function listeleriGuncelle() {
+            let doldur = (id, dizi, kat) => {
+                let el = document.getElementById(id);
+                if(!el) return;
+                el.inner
