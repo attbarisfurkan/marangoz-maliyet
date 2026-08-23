@@ -1,332 +1,444 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAYDINWOOD - CNC & Ahşap Maliyet Hesaplayıcı</title>
-    
-    <!-- PWA Manifest -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MaydinWood Maliyet Hesaplama</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0b1329">
+    <meta name="theme-color" content="#e67e22">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            bg: '#0b1329',
-                            card: '#162238',
-                            border: '#233554',
-                            accent: '#38bdf8',
-                            hover: '#0284c7'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="apple-mobile-web-app-title" content="MaydinWood">
     <style>
-        body { 
-            background-color: #080d1a; 
-            color: #f1f5f9; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        :root {
+            --primary: #e67e22;
+            --primary-dark: #d35400;
+            --bg-color: #f5f6fa;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #dcdde1;
+            --danger: #e74c3c;
+            --success: #2ecc71;
         }
-        input, select { 
-            background-color: #0f172a !important; 
-            border-color: #1e293b !important; 
-            color: #f8fafc !important; 
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-dark); padding-bottom: 80px; }
+        
+        header {
+            background-color: var(--text-dark);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        input:focus, select:focus { 
-            border-color: #38bdf8 !important; 
-            outline: none; 
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); 
+        
+        header h1 { font-size: 1.2rem; margin: 0; color: var(--primary); }
+        .clear-btn { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+        
+        /* Navigation (Tabs) */
+        .nav-tabs {
+            display: flex;
+            overflow-x: auto;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 54px;
+            z-index: 99;
+            scrollbar-width: none;
         }
-        .tab-btn { transition: all 0.2s ease; }
-        .tab-btn.active { 
-            border-bottom: 3px solid #38bdf8; 
-            color: #38bdf8; 
-            font-weight: 600; 
-            background-color: rgba(56, 189, 248, 0.08); 
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        
+        .tab-btn {
+            flex: 0 0 auto;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            white-space: nowrap;
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; color: black; }
-            .print-card { background: white !important; border: 1px solid #ccc !important; color: black !important; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        /* Content Sections */
+        .tab-content { display: none; padding: 20px; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Form Elements */
+        .card { background: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card h3 { margin-bottom: 15px; font-size: 1.1rem; color: var(--text-dark); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; }
+        .form-control {
+            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; background: var(--bg-color);
         }
+        .form-control:focus { outline: none; border-color: var(--primary); background: white; }
+        
+        .row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .col { flex: 1; }
+
+        button.btn-add {
+            background-color: var(--primary); color: white; border: none; padding: 12px; width: 100%;
+            border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        button.btn-add:active { background-color: var(--primary-dark); }
+
+        /* List Items */
+        .item-list { list-style: none; margin-top: 15px; }
+        .item-list li {
+            background: var(--bg-color); padding: 10px 15px; border-radius: 4px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary);
+        }
+        .item-info { flex-grow: 1; }
+        .item-info strong { display: block; font-size: 0.95rem; }
+        .item-info span { font-size: 0.8rem; color: var(--text-light); }
+        .item-price { font-weight: bold; margin-right: 15px; color: var(--text-dark); }
+        .btn-delete { background: var(--danger); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold;}
+
+        /* Summary Section */
+        .summary-card { background: var(--text-dark); color: white; }
+        .summary-card h3 { color: var(--primary); border-bottom-color: rgba(255,255,255,0.2); }
+        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
+        .summary-total { display: flex; justify-content: space-between; padding: 15px 0 0 0; font-size: 1.3rem; font-weight: bold; color: var(--primary); margin-top: 10px; border-top: 2px solid var(--primary); }
+        
+        .btn-print { background-color: var(--success); color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+
+        /* Material Type Toggle */
+        .toggle-group { display: flex; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid var(--primary); }
+        .toggle-btn { flex: 1; padding: 10px; text-align: center; background: white; color: var(--primary); font-weight: bold; cursor: pointer; }
+        .toggle-btn.active { background: var(--primary); color: white; }
+        
+        .material-section { display: none; }
+        .material-section.active { display: block; }
+        
+        .help-text { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col pb-12">
+<body>
 
-    <!-- Header / Brand -->
-    <header class="bg-slate-900 border-b border-slate-800 py-4 px-4 sm:px-8 no-print">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-sky-400 flex items-center gap-2">
-                    <i class="fa-solid fa-cube"></i> BOYUTLAB / MAYDINWOOD
-                </h1>
-                <p class="text-xs text-slate-400">CNC Otomasyonu & Ahşap Maliyet Hesaplayıcı (PWA)</p>
-            </div>
-            <div class="flex items-center gap-2 text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 border border-slate-700">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Canlı Senkronize Hesaplama</span>
-            </div>
-        </div>
+    <header>
+        <h1>MaydinWood</h1>
+        <button class="clear-btn" onclick="app.clearAllData()">Tümünü Sil</button>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-6xl mx-auto w-full px-3 sm:px-6 pt-4 flex-grow">
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="app.switchTab('hammadde')">Hammadde</button>
+        <button class="tab-btn" onclick="app.switchTab('cnc')">CNC</button>
+        <button class="tab-btn" onclick="app.switchTab('cadcam')">CAD/CAM</button>
+        <button class="tab-btn" onclick="app.switchTab('ekstra')">İşçilik & Hırdavat</button>
+        <button class="tab-btn" onclick="app.switchTab('ozet')">ÖZET</button>
+    </div>
 
-        <!-- Navigation Tabs -->
-        <div class="no-print mb-6 border-b border-slate-800 overflow-x-auto no-scrollbar flex whitespace-nowrap bg-slate-900/60 rounded-xl p-1 shadow-lg">
-            <button onclick="switchTab('tab-material')" id="btn-tab-material" class="tab-btn active px-4 py-3 text-sm flex items-center gap-2 rounded-lg text-slate-300 hover:text-sky-300">
-                <i class="fa-solid fa-layer-group text-sky-400"></i>
-                <span>1. Malzeme & Parçalar</span>
-            </button>
-            <button onclick="switchTab('tab-cnc')" id="btn-tab-cnc" class="tab-btn px-4 py-3 text-sm flex items-center gap-2 rounded-lg text-slate-300 hover:text-sky-300">
-                <i class="fa-solid fa-gears text-sky-400"></i>
-                <span>2. CNC İşleme</span>
-            </button>
-            <button onclick="switchTab('tab-cad')" id="btn-tab-cad" class="tab-btn px-4 py-3 text-sm flex items-center gap-2 rounded-lg text-slate-300 hover:text-sky-300">
-                <i class="fa-solid fa-compass-drafting text-sky-400"></i>
-                <span>3. CAD / CAM</span>
-            </button>
-            <button onclick="switchTab('tab-labor')" id="btn-tab-labor" class="tab-btn px-4 py-3 text-sm flex items-center gap-2 rounded-lg text-slate-300 hover:text-sky-300">
-                <i class="fa-solid fa-hammer text-sky-400"></i>
-                <span>4. İşçilik & Ekstra</span>
-            </button>
-            <button onclick="switchTab('tab-summary')" id="btn-tab-summary" class="tab-btn px-4 py-3 text-sm flex items-center gap-2 rounded-lg text-slate-300 hover:text-sky-300">
-                <i class="fa-solid fa-calculator text-emerald-400"></i>
-                <span class="font-semibold text-emerald-400">5. Özet & Teklif</span>
-            </button>
-        </div>
-
-        <!-- ================= TAB 1: MALZEME & PARÇALAR ================= -->
-        <div id="tab-material" class="tab-content space-y-6">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                    <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
-                        <i class="fa-solid fa-box-archive"></i> 1. Plaka & Ham Madde Tanımı
-                    </h2>
-                    <span class="text-xs bg-sky-950 text-sky-300 border border-sky-800 px-2.5 py-1 rounded-md">Ham Madde</span>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Malzeme Türü</label>
-                        <select id="matType" onchange="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                            <option value="MDF / Ham MDF">MDF / Ham MDF</option>
-                            <option value="Suntalam / Sunta">Suntalam / Sunta</option>
-                            <option value="MDF Lam">MDF Lam</option>
-                            <option value="Kontraplak / Marin">Kontraplak / Marin</option>
-                            <option value="Masif Ahşap Panel">Masif Ahşap Panel</option>
-                            <option value="Pleksi / Alüminyum Kompozit">Pleksi / Alüminyum Kompozit</option>
-                            <option value="Diğer Özel Malzeme">Diğer Özel Malzeme</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Plaka En (mm)</label>
-                        <input type="number" id="sheetWidth" value="2800" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Plaka Boy (mm)</label>
-                        <input type="number" id="sheetHeight" value="2100" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Plaka Fiyatı (TL)</label>
-                        <input type="number" id="sheetPrice" value="2500" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Fire / Pay (%)</label>
-                        <input type="number" id="wasteRate" value="15" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-
-                    <div class="flex items-end">
-                        <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 w-full text-xs text-slate-300">
-                            Plaka Alanı: <span id="sheetAreaDisp" class="font-bold text-sky-400">5.88 m²</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- HAMMADDE SEKME -->
+    <div id="hammadde" class="tab-content active">
+        <div class="card">
+            <h3>Hammadde Türü</h3>
+            <div class="toggle-group">
+                <div class="toggle-btn active" onclick="app.switchMaterialType('panel')" id="btn-panel">Panel (Plaka)</div>
+                <div class="toggle-btn" onclick="app.switchMaterialType('m3')" id="btn-m3">M³ (Kereste)</div>
             </div>
 
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800 mb-4">
-                    <div>
-                        <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
-                            <i class="fa-solid fa-list-check"></i> Kesilecek Parçalar Listesi
-                        </h2>
-                        <p class="text-xs text-slate-400">Projedeki tüm parçaları ekleyin, plaka kullanımı ve bant metrajı otomatik hesaplansın.</p>
-                    </div>
-                    <button onclick="addPartRow()" class="bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-lg shadow-sky-900/30 transition">
-                        <i class="fa-solid fa-plus"></i> Yeni Parça Ekle
-                    </button>
+            <!-- PANEL HESABI -->
+            <div id="sec-panel" class="material-section active">
+                <div class="form-group">
+                    <label>Malzeme Adı</label>
+                    <input type="text" id="p_ad" class="form-control" placeholder="Örn: 18mm Ham MDF">
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Plaka En (cm)</label>
+                        <input type="number" id="p_plaka_en" class="form-control" value="210">
+                    </div>
+                    <div class="col">
+                        <label>Plaka Boy (cm)</label>
+                        <input type="number" id="p_plaka_boy" class="form-control" value="280">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>1 Plaka Fiyatı (TL)</label>
+                    <input type="number" id="p_fiyat" class="form-control" placeholder="Örn: 1500">
+                </div>
+                
+                <h3 style="margin-top:20px; font-size: 1rem;">Kullanılan Parça</h3>
+                <div class="row">
+                    <div class="col">
+                        <label>Parça En (cm)</label>
+                        <input type="number" id="p_parca_en" class="form-control" placeholder="0">
+                    </div>
+                    <div class="col">
+                        <label>Parça Boy (cm)</label>
+                        <input type="number" id="p_parca_boy" class="form-control" placeholder="0">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Adet</label>
+                        <input type="number" id="p_adet" class="form-control" value="1">
+                    </div>
+                    <div class="col">
+                        <label>Fire Payı (%)</label>
+                        <input type="number" id="p_fire" class="form-control" value="15">
+                        <div class="help-text">Kerf & kenar payı</div>
+                    </div>
+                </div>
+                <button class="btn-add" onclick="app.addMaterial('panel')">Panel Parça Ekle</button>
+            </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-800/80 text-slate-300 text-xs uppercase tracking-wider">
-                            <tr>
-                                <th class="p-3 rounded-l-lg">Parça Tanımı</th>
-                                <th class="p-3">En (mm)</th>
-                                <th class="p-3">Boy (mm)</th>
-                                <th class="p-3">Adet</th>
-                                <th class="p-3 text-center">Kenar Bandı</th>
-                                <th class="p-3 text-right">Alan (m²)</th>
-                                <th class="p-3 text-center rounded-r-lg">İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody id="partsTableBody" class="divide-y divide-slate-800">
-                        </tbody>
-                    </table>
+            <!-- M3 HESABI -->
+            <div id="sec-m3" class="material-section">
+                <div class="form-group">
+                    <label>Ağaç Türü</label>
+                    <input type="text" id="m_ad" class="form-control" placeholder="Örn: Kayın, Çam">
                 </div>
+                <div class="form-group">
+                    <label>1 m³ Fiyatı (TL)</label>
+                    <input type="number" id="m_fiyat" class="form-control" placeholder="Örn: 25000">
+                </div>
+                
+                <h3 style="margin-top:20px; font-size: 1rem;">Kullanılan Parça Ölçüleri</h3>
+                <div class="row">
+                    <div class="col">
+                        <label>En (cm)</label>
+                        <input type="number" id="m_en" class="form-control" placeholder="0">
+                    </div>
+                    <div class="col">
+                        <label>Boy (cm)</label>
+                        <input type="number" id="m_boy" class="form-control" placeholder="0">
+                    </div>
+                    <div class="col">
+                        <label>Kalınlık (cm)</label>
+                        <input type="number" id="m_kalinlik" class="form-control" placeholder="0">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label>Adet</label>
+                        <input type="number" id="m_adet" class="form-control" value="1">
+                    </div>
+                    <div class="col">
+                        <label>Fire Payı (%)</label>
+                        <input type="number" id="m_fire" class="form-control" value="20">
+                    </div>
+                </div>
+                <button class="btn-add" onclick="app.addMaterial('m3')">Kereste Parça Ekle</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Eklenen Hammaddeler</h3>
+            <ul id="hammadde-list" class="item-list"></ul>
+        </div>
+    </div>
 
-                <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                    <div>
-                        <span class="block text-xs text-slate-400">Net Parça Alanı</span>
-                        <span id="totalNetAreaDisp" class="text-base font-bold text-slate-100">0.00 m²</span>
-                    </div>
-                    <div>
-                        <span class="block text-xs text-slate-400">Fire Dahil Alan</span>
-                        <span id="totalGrossAreaDisp" class="text-base font-bold text-sky-400">0.00 m²</span>
-                    </div>
-                    <div>
-                        <span class="block text-xs text-slate-400">Gerekli Plaka Adedi</span>
-                        <span id="neededSheetsDisp" class="text-base font-bold text-amber-400">0 Adet</span>
-                    </div>
-                    <div>
-                        <span class="block text-xs text-slate-400">Toplam Bant Metrajı</span>
-                        <span id="totalEdgeBandDisp" class="text-base font-bold text-emerald-400">0.00 mt</span>
-                    </div>
+    <!-- CNC SEKME -->
+    <div id="cnc" class="tab-content">
+        <div class="card">
+            <h3>CNC İşleme Maliyeti</h3>
+            <div class="form-group">
+                <label>CNC Makine Saatlik Ücreti (TL)</label>
+                <input type="number" id="cnc_saatlik" class="form-control" placeholder="Örn: 1000" onchange="app.saveSettings()">
+                <div class="help-text">Elektrik, uç, amortisman ve operatör dahil 1 saatlik bedel.</div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <label>İşlem Süresi (Dk)</label>
+                    <input type="number" id="cnc_sure" class="form-control" placeholder="0">
                 </div>
+                <div class="col">
+                    <label>Hazırlık Süresi (Dk)</label>
+                    <input type="number" id="cnc_hazirlik" class="form-control" value="15">
+                </div>
+            </div>
+            
+            <div class="form-group" style="background:#fff3cd; padding:10px; border-radius:4px; border:1px solid #ffeeba; font-size:0.85rem; color:#856404;">
+                <strong>Not:</strong> Toplam süre 60 dakikanın altındaysa, endüstri standardı olarak maliyet <strong>1 saat (Taban Fiyat)</strong> üzerinden hesaplanır.
+            </div>
+
+            <button class="btn-add" onclick="app.addCncCost()">CNC Maliyetini Ekle / Güncelle</button>
+        </div>
+        
+        <div class="card">
+            <h3>CNC Kaydı</h3>
+            <ul id="cnc-list" class="item-list"></ul>
+        </div>
+    </div>
+
+    <!-- CAD/CAM SEKME -->
+    <div id="cadcam" class="tab-content">
+        <div class="card">
+            <h3>Tasarım ve CAM Maliyeti</h3>
+            <div class="form-group">
+                <label>CAD/CAM Saatlik Ücretiniz (TL)</label>
+                <input type="number" id="cad_saatlik" class="form-control" placeholder="Örn: 750" onchange="app.saveSettings()">
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <label>Harcanan Süre (Saat)</label>
+                    <input type="number" id="cad_sure" class="form-control" placeholder="Örn: 1.5">
+                </div>
+                <div class="col">
+                    <label>Özel Revizyon Ücreti (TL)</label>
+                    <input type="number" id="cad_ekstra" class="form-control" placeholder="0">
+                </div>
+            </div>
+            
+            <button class="btn-add" onclick="app.addCadCost()">Tasarım Maliyetini Ekle</button>
+        </div>
+        
+        <div class="card">
+            <h3>Tasarım Kaydı</h3>
+            <ul id="cad-list" class="item-list"></ul>
+        </div>
+    </div>
+
+    <!-- İŞÇİLİK & HIRDAVAT SEKME -->
+    <div id="ekstra" class="tab-content">
+        <div class="card">
+            <h3>Hırdavat & Donanım</h3>
+            <div class="form-group">
+                <label>Malzeme (Menteşe, Vida, Ray vs.)</label>
+                <input type="text" id="h_ad" class="form-control" placeholder="Örn: Çekmece Rayı">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Birim Fiyatı (TL)</label>
+                    <input type="number" id="h_fiyat" class="form-control" placeholder="0">
+                </div>
+                <div class="col">
+                    <label>Adet/Metre</label>
+                    <input type="number" id="h_adet" class="form-control" value="1">
+                </div>
+            </div>
+            <button class="btn-add" onclick="app.addExtra('hirdavat')">Donanım Ekle</button>
+        </div>
+
+        <div class="card">
+            <h3>Ekstra İşçilik & Sarf</h3>
+            <div class="form-group">
+                <label>İşlem/Malzeme (Zımpara, Cila, Paketleme vb.)</label>
+                <input type="text" id="i_ad" class="form-control" placeholder="Örn: Zımpara + Vernik İşçiliği">
+            </div>
+            <div class="form-group">
+                <label>Toplam Tutar (TL)</label>
+                <input type="number" id="i_tutar" class="form-control" placeholder="0">
+            </div>
+            <button class="btn-add" onclick="app.addExtra('iscilik')">İşçilik/Sarf Ekle</button>
+        </div>
+
+        <div class="card">
+            <h3>Eklenen Donanım ve İşçilikler</h3>
+            <ul id="ekstra-list" class="item-list"></ul>
+        </div>
+    </div>
+
+    <!-- ÖZET SEKME -->
+    <div id="ozet" class="tab-content">
+        <div class="card summary-card">
+            <h3>Maliyet Özeti</h3>
+            
+            <div class="summary-row">
+                <span>Toplam Hammadde:</span>
+                <span id="sum_hammadde">0.00 TL</span>
+            </div>
+            <div class="summary-row">
+                <span>CNC Kesim (Taban Fiyatlı):</span>
+                <span id="sum_cnc">0.00 TL</span>
+            </div>
+            <div class="summary-row">
+                <span>CAD/CAM Tasarım:</span>
+                <span id="sum_cad">0.00 TL</span>
+            </div>
+            <div class="summary-row">
+                <span>Hırdavat & Donanım:</span>
+                <span id="sum_hirdavat">0.00 TL</span>
+            </div>
+            <div class="summary-row">
+                <span>Ekstra İşçilik & Sarf:</span>
+                <span id="sum_iscilik">0.00 TL</span>
+            </div>
+            
+            <div class="form-group" style="margin-top:15px; border-top:1px dashed rgba(255,255,255,0.2); padding-top:15px;">
+                <label style="color:white;">Genel Gider / Kâr Payı Ekle (%)</label>
+                <input type="number" id="genel_gider" class="form-control" value="0" onchange="app.calculateTotal()">
+                <div class="help-text" style="color:#ccc;">Atölye gideri veya kâr marjı yüzdesi.</div>
+            </div>
+
+            <div class="summary-total">
+                <span>GENEL TOPLAM:</span>
+                <span id="sum_total">0.00 TL</span>
             </div>
         </div>
 
-        <!-- ================= TAB 2: CNC İŞLEME ================= -->
-        <div id="tab-cnc" class="tab-content hidden space-y-6">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                    <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
-                        <i class="fa-solid fa-gears"></i> 2. CNC Router İşleme & Operasyon
-                    </h2>
-                    <span class="text-xs bg-sky-950 text-sky-300 border border-sky-800 px-2.5 py-1 rounded-md">Makine</span>
-                </div>
+        <button class="btn-print" onclick="app.generateClientQuote()">Müşteri Teklifi Görünümü (Gizli Maliyetler)</button>
+    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Takım / Bıçak Çapı (mm)</label>
-                        <input type="number" id="cncToolDia" value="6" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Kesim Hızı (mm/dk)</label>
-                        <input type="number" id="cncFeedRate" value="4000" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Tahmini CNC Süresi (Dakika)</label>
-                        <input type="number" id="cncTimeMin" value="45" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">CNC Saatlik Ücret (TL/Saat)</label>
-                        <input type="number" id="cncHourlyRate" value="600" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Vakum & Amortisman (TL)</label>
-                        <input type="number" id="cncExtraCost" value="100" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div class="flex items-end">
-                        <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 w-full text-xs text-slate-300">
-                            CNC Toplam Maliyeti: <span id="cncTotalCostDisp" class="font-bold text-sky-400">0.00 TL</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- ================= TAB 3: CAD / CAM ================= -->
-        <div id="tab-cad" class="tab-content hidden space-y-6">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                    <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
-                        <i class="fa-solid fa-compass-drafting"></i> 3. CAD / CAM Tasarım & Mühendislik
-                    </h2>
-                    <span class="text-xs bg-sky-950 text-sky-300 border border-sky-800 px-2.5 py-1 rounded-md">Mühendislik</span>
-                </div>
+    <script>
+        const app = {
+            data: {
+                hammadde: [],
+                cnc: [],
+                cad: [],
+                ekstra: []
+            },
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">CAD (3D Çizim) Süresi (Saat)</label>
-                        <input type="number" step="0.1" id="cadHours" value="1.5" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">CAM (G-Code) Süresi (Saat)</label>
-                        <input type="number" step="0.1" id="camHours" value="0.5" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Tasarım Ücreti (TL/Saat)</label>
-                        <input type="number" id="cadHourlyRate" value="400" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Sabit Hazırlık Ücreti (TL)</label>
-                        <input type="number" id="cadSetupFee" value="150" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div class="md:col-span-2 flex items-end">
-                        <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700/60 w-full text-xs text-slate-300">
-                            CAD/CAM Tasarım Maliyeti: <span id="cadTotalCostDisp" class="font-bold text-sky-400">0.00 TL</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            init() {
+                const savedData = localStorage.getItem('maydinwood_data');
+                if (savedData) {
+                    this.data = JSON.parse(savedData);
+                }
+                
+                document.getElementById('cnc_saatlik').value = localStorage.getItem('maydinwood_cnc_saat') || '';
+                document.getElementById('cad_saatlik').value = localStorage.getItem('maydinwood_cad_saat') || '';
 
-        <!-- ================= TAB 4: İŞÇİLİK & EKSTRA ================= -->
-        <div id="tab-labor" class="tab-content hidden space-y-6">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                    <h2 class="text-lg font-bold text-sky-400 flex items-center gap-2">
-                        <i class="fa-solid fa-hammer"></i> 4. Yüzey İşlem, Kenar Bandı & Atölye İşçiliği
-                    </h2>
-                    <span class="text-xs bg-sky-950 text-sky-300 border border-sky-800 px-2.5 py-1 rounded-md">Atölye</span>
-                </div>
+                this.renderAll();
+                this.registerSW();
+            },
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Kenar Bandı Birim Fiyatı (TL/Metre)</label>
-                        <input type="number" id="edgeBandMeterPrice" value="12" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Zımpara / Vernik / Boya (TL)</label>
-                        <input type="number" id="surfaceCost" value="200" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Aksesuar & Vida/Bağlantı (TL)</label>
-                        <input type="number" id="hardwareCost" value="350" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Atölye Montaj Süresi (Saat)</label>
-                        <input type="number" step="0.5" id="laborHours" value="2" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Atölye İşçilik Saat Ücreti (TL/Saat)</label>
-                        <input type="number" id="laborHourlyRate" value="300" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Paketleme & Lojistik / Nakliye (TL)</label>
-                        <input type="number" id="shippingCost" value="250" oninput="calculateAll()" class="w-full rounded-lg px-3 py-2 text-sm border">
-                    </div>
-                </div>
-            </div>
-        </div>
+            saveData() {
+                localStorage.setItem('maydinwood_data', JSON.stringify(this.data));
+                this.renderAll();
+            },
 
-        <!-- =========
+            saveSettings() {
+                localStorage.setItem('maydinwood_cnc_saat', document.getElementById('cnc_saatlik').value);
+                localStorage.setItem('maydinwood_cad_saat', document.getElementById('cad_saatlik').value);
+            },
+
+            clearAllData() {
+                if(confirm('Tüm projeyi silmek istediğinize emin misiniz? Ayarlarınız kalacak, sadece liste temizlenecek.')){
+                    this.data = { hammadde: [], cnc: [], cad: [], ekstra: [] };
+                    this.saveData();
+                }
+            },
+
+            switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                
+                document.getElementById(tabId).classList.add('active');
+                event.target.classList.add('active');
+
+                if(tabId === 'ozet') this.calculateTotal();
+            },
+
+            switchMaterialType(type) {
+                document.querySelectorAll('.toggle-btn').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.material-section').forEach(el => el.classList.remove('active'));
+                
+                document.getElementById('btn-' + type).classList.add('active');
+                document.getElementById('sec-' + type).classList.add('active');
+      
