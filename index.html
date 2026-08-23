@@ -133,11 +133,12 @@
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="app.switchTab('hammadde')">Hammadde</button>
-        <button class="tab-btn" onclick="app.switchTab('cnc')">CNC</button>
-        <button class="tab-btn" onclick="app.switchTab('cadcam')">CAD/CAM</button>
-        <button class="tab-btn" onclick="app.switchTab('ekstra')">İşçilik & Hırdavat</button>
-        <button class="tab-btn" onclick="app.switchTab('ozet')">ÖZET</button>
+        <!-- HATA BURADA ÇÖZÜLDÜ: onclick içine 'this' eklendi -->
+        <button class="tab-btn active" onclick="app.switchTab('hammadde', this)">Hammadde</button>
+        <button class="tab-btn" onclick="app.switchTab('cnc', this)">CNC</button>
+        <button class="tab-btn" onclick="app.switchTab('cadcam', this)">CAD/CAM</button>
+        <button class="tab-btn" onclick="app.switchTab('ekstra', this)">İşçilik & Hırdavat</button>
+        <button class="tab-btn" onclick="app.switchTab('ozet', this)">ÖZET</button>
     </div>
 
     <!-- HAMMADDE SEKME -->
@@ -425,20 +426,20 @@
                 }
             },
 
-            switchTab(tabId) {
+            // HATA BURADA ÇÖZÜLDÜ: btnElement parametresi eklendi
+            switchTab(tabId, btnElement) {
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
                 document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
                 
                 document.getElementById(tabId).classList.add('active');
-                event.target.classList.add('active');
+                
+                if (btnElement) {
+                    btnElement.classList.add('active');
+                }
 
                 if(tabId === 'ozet') this.calculateTotal();
             },
 
             switchMaterialType(type) {
                 document.querySelectorAll('.toggle-btn').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.material-section').forEach(el => el.classList.remove('active'));
-                
-                document.getElementById('btn-' + type).classList.add('active');
-                document.getElementById('sec-' + type).classList.add('active');
-      
+                document.querySelectorAll('.m
