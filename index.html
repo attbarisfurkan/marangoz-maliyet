@@ -26,15 +26,20 @@
         
         body { background-color: var(--bg-color); color: var(--text-dark); padding-bottom: 80px; }
         
+        /* GÖRÜNMEZ KALKAN HATASI BURADA ÇÖZÜLDÜ */
+        /* Başlık ve sekmeleri tek bir esnek kutuda birleştirdik */
+        .sticky-container {
+            position: sticky;
+            top: 0;
+            z-index: 9999; /* En üstte olmasını garantiye aldık */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
         header {
             background-color: var(--text-dark);
             color: white;
             padding: 15px 20px;
             text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -49,9 +54,6 @@
             overflow-x: auto;
             background: white;
             border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 54px; /* Header'ın altında kalması için */
-            z-index: 99;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
@@ -59,7 +61,7 @@
         
         .tab-btn {
             flex: 0 0 auto;
-            padding: 15px 20px; /* Dokunma alanı genişletildi */
+            padding: 15px 20px;
             background: none;
             border: none;
             border-bottom: 3px solid transparent;
@@ -82,26 +84,18 @@
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; }
-        .form-control {
-            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; background: var(--bg-color);
-        }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 4px; font-size: 1rem; background: var(--bg-color); }
         .form-control:focus { outline: none; border-color: var(--primary); background: white; }
         
         .row { display: flex; gap: 10px; margin-bottom: 15px; }
         .col { flex: 1; }
 
-        button.btn-add {
-            background-color: var(--primary); color: white; border: none; padding: 15px; width: 100%;
-            border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
+        button.btn-add { background-color: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
         button.btn-add:active { background-color: var(--primary-dark); }
 
         /* List Items */
         .item-list { list-style: none; margin-top: 15px; }
-        .item-list li {
-            background: var(--bg-color); padding: 10px 15px; border-radius: 4px; margin-bottom: 8px;
-            display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary);
-        }
+        .item-list li { background: var(--bg-color); padding: 10px 15px; border-radius: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--primary); }
         .item-info { flex-grow: 1; }
         .item-info strong { display: block; font-size: 0.95rem; }
         .item-info span { font-size: 0.8rem; color: var(--text-light); }
@@ -117,7 +111,7 @@
         .btn-print { background-color: var(--success); color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
 
         /* Material Type Toggle */
-        .toggle-group { display: flex; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid var(--primary); position: relative; z-index: 10; }
+        .toggle-group { display: flex; margin-bottom: 15px; border-radius: 4px; overflow: hidden; border: 1px solid var(--primary); }
         .toggle-btn { flex: 1; padding: 12px; text-align: center; background: white; color: var(--primary); font-weight: bold; cursor: pointer; transition: 0.2s; }
         .toggle-btn.active { background: var(--primary); color: white; }
         
@@ -127,28 +121,32 @@
         .help-text { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
     </style>
 </head>
-<body ontouchstart=""> <!-- iOS için Dokunma Hassasiyeti Kilidi Açıldı -->
+<body>
 
-    <header>
-        <h1>MaydinWood</h1>
-        <button class="clear-btn" onclick="app.clearAllData()">Sıfırla</button>
-    </header>
+    <!-- YAPIŞKAN KUTU BAŞLANGICI -->
+    <div class="sticky-container">
+        <header>
+            <h1>MaydinWood</h1>
+            <button class="clear-btn" onclick="window.app.clearAllData()">Sıfırla</button>
+        </header>
 
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="app.switchTab('hammadde', this)">Hammadde</button>
-        <button class="tab-btn" onclick="app.switchTab('cnc', this)">CNC</button>
-        <button class="tab-btn" onclick="app.switchTab('cadcam', this)">CAD/CAM</button>
-        <button class="tab-btn" onclick="app.switchTab('ekstra', this)">İşçilik & Hırdavat</button>
-        <button class="tab-btn" onclick="app.switchTab('ozet', this)">ÖZET</button>
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tab-btn-hammadde" onclick="window.app.switchTab('hammadde')">Hammadde</button>
+            <button class="tab-btn" id="tab-btn-cnc" onclick="window.app.switchTab('cnc')">CNC</button>
+            <button class="tab-btn" id="tab-btn-cadcam" onclick="window.app.switchTab('cadcam')">CAD/CAM</button>
+            <button class="tab-btn" id="tab-btn-ekstra" onclick="window.app.switchTab('ekstra')">İşçilik & Hırdavat</button>
+            <button class="tab-btn" id="tab-btn-ozet" onclick="window.app.switchTab('ozet')">ÖZET</button>
+        </div>
     </div>
+    <!-- YAPIŞKAN KUTU BİTİŞİ -->
 
     <!-- HAMMADDE SEKME -->
     <div id="hammadde" class="tab-content active">
         <div class="card">
             <h3>Hammadde Türü</h3>
             <div class="toggle-group">
-                <div class="toggle-btn active" onclick="app.switchMaterialType('panel')" id="btn-panel">Panel (Plaka)</div>
-                <div class="toggle-btn" onclick="app.switchMaterialType('m3')" id="btn-m3">M³ (Kereste)</div>
+                <div class="toggle-btn active" id="btn-panel" onclick="window.app.switchMaterialType('panel')">Panel (Plaka)</div>
+                <div class="toggle-btn" id="btn-m3" onclick="window.app.switchMaterialType('m3')">M³ (Kereste)</div>
             </div>
 
             <!-- PANEL HESABI -->
@@ -194,7 +192,7 @@
                         <div class="help-text">Kerf & kenar payı</div>
                     </div>
                 </div>
-                <button class="btn-add" onclick="app.addMaterial('panel')">Panel Parça Ekle</button>
+                <button class="btn-add" onclick="window.app.addMaterial('panel')">Panel Parça Ekle</button>
             </div>
 
             <!-- M3 HESABI -->
@@ -233,7 +231,7 @@
                         <input type="number" id="m_fire" class="form-control" value="20">
                     </div>
                 </div>
-                <button class="btn-add" onclick="app.addMaterial('m3')">Kereste Parça Ekle</button>
+                <button class="btn-add" onclick="window.app.addMaterial('m3')">Kereste Parça Ekle</button>
             </div>
         </div>
         
@@ -249,7 +247,7 @@
             <h3>CNC İşleme Maliyeti</h3>
             <div class="form-group">
                 <label>CNC Makine Saatlik Ücreti (TL)</label>
-                <input type="number" id="cnc_saatlik" class="form-control" placeholder="Örn: 1000" onchange="app.saveSettings()">
+                <input type="number" id="cnc_saatlik" class="form-control" placeholder="Örn: 1000" onchange="window.app.saveSettings()">
                 <div class="help-text">Elektrik, uç, amortisman ve operatör dahil 1 saatlik bedel.</div>
             </div>
             
@@ -268,7 +266,7 @@
                 <strong>Not:</strong> Toplam süre 60 dakikanın altındaysa, maliyet <strong>1 saat (Taban Fiyat)</strong> üzerinden hesaplanır.
             </div>
 
-            <button class="btn-add" onclick="app.addCncCost()">CNC Maliyetini Ekle / Güncelle</button>
+            <button class="btn-add" onclick="window.app.addCncCost()">CNC Maliyetini Ekle / Güncelle</button>
         </div>
         
         <div class="card">
@@ -283,7 +281,7 @@
             <h3>Tasarım ve CAM Maliyeti</h3>
             <div class="form-group">
                 <label>CAD/CAM Saatlik Ücretiniz (TL)</label>
-                <input type="number" id="cad_saatlik" class="form-control" placeholder="Örn: 750" onchange="app.saveSettings()">
+                <input type="number" id="cad_saatlik" class="form-control" placeholder="Örn: 750" onchange="window.app.saveSettings()">
             </div>
             
             <div class="row">
@@ -297,7 +295,7 @@
                 </div>
             </div>
             
-            <button class="btn-add" onclick="app.addCadCost()">Tasarım Maliyetini Ekle</button>
+            <button class="btn-add" onclick="window.app.addCadCost()">Tasarım Maliyetini Ekle</button>
         </div>
         
         <div class="card">
@@ -324,7 +322,7 @@
                     <input type="number" id="h_adet" class="form-control" value="1">
                 </div>
             </div>
-            <button class="btn-add" onclick="app.addExtra('hirdavat')">Donanım Ekle</button>
+            <button class="btn-add" onclick="window.app.addExtra('hirdavat')">Donanım Ekle</button>
         </div>
 
         <div class="card">
@@ -337,7 +335,7 @@
                 <label>Toplam Tutar (TL)</label>
                 <input type="number" id="i_tutar" class="form-control" placeholder="0">
             </div>
-            <button class="btn-add" onclick="app.addExtra('iscilik')">İşçilik/Sarf Ekle</button>
+            <button class="btn-add" onclick="window.app.addExtra('iscilik')">İşçilik/Sarf Ekle</button>
         </div>
 
         <div class="card">
@@ -374,7 +372,7 @@
             
             <div class="form-group" style="margin-top:15px; border-top:1px dashed rgba(255,255,255,0.2); padding-top:15px;">
                 <label style="color:white;">Genel Gider / Kâr Payı Ekle (%)</label>
-                <input type="number" id="genel_gider" class="form-control" value="0" onchange="app.calculateTotal()">
+                <input type="number" id="genel_gider" class="form-control" value="0" onchange="window.app.calculateTotal()">
                 <div class="help-text" style="color:#ccc;">Atölye gideri veya kâr marjı yüzdesi.</div>
             </div>
 
@@ -384,17 +382,24 @@
             </div>
         </div>
 
-        <button class="btn-print" onclick="app.generateClientQuote()">Müşteri Teklifi Görünümü (Gizli Maliyetler)</button>
+        <button class="btn-print" onclick="window.app.generateClientQuote()">Müşteri Teklifi Görünümü (Gizli Maliyetler)</button>
     </div>
 
     <script>
-        // Kapsam (Scope) sorunu tamamen çözüldü, doğrudan window objesine bağlandı.
+        // PWA Önbelleğini Zorla Temizleme Kodu (Sorun çıkaran eski hafızayı siler)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+
         window.app = {
             data: { hammadde: [], cnc: [], cad: [], ekstra: [] },
 
             init() {
                 try {
-                    // Eski bozuk verilerin sistemi çökertmesine karşı güvenlik duvarı eklendi
                     const savedData = localStorage.getItem('maydinwood_data');
                     if (savedData) {
                         const parsed = JSON.parse(savedData);
@@ -404,7 +409,6 @@
                         this.data.ekstra = parsed.ekstra || [];
                     }
                 } catch(e) {
-                    console.warn("Eski veriler uyumsuz, sıfırlanıyor...");
                     this.data = { hammadde: [], cnc: [], cad: [], ekstra: [] };
                 }
                 
@@ -412,7 +416,6 @@
                 document.getElementById('cad_saatlik').value = localStorage.getItem('maydinwood_cad_saat') || '';
 
                 this.renderAll();
-                this.registerSW();
             },
 
             saveData() {
@@ -423,10 +426,4 @@
             saveSettings() {
                 localStorage.setItem('maydinwood_cnc_saat', document.getElementById('cnc_saatlik').value);
                 localStorage.setItem('maydinwood_cad_saat', document.getElementById('cad_saatlik').value);
-            },
-
-            clearAllData() {
-                if(confirm('Tüm verileri silip sistemi sıfırlamak istediğinize emin misiniz?')){
-                    this.data = { hammadde: [], cnc: [], cad: [], ekstra: [] };
-                    this.saveData();
-                    window.location.reload()
+       
